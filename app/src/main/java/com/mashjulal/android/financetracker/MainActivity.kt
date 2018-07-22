@@ -54,6 +54,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // open settings
                 startActivity(SettingsActivity.newIntent(this))
             }
+            R.id.nav_about -> {
+                // open about page
+                startActivity(AboutActivity.newIntent(this))
+            }
         }
 
         if (fragment != null) {
