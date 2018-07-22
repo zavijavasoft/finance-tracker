@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Finance Tracker</string>
+    <string name="title_activity_main">Main</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="false">Finance Tracker</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
+    <string name="nav_menu_home">Home</string>
+    <string name="nav_menu_settings">Settings</string>
+
+    <string name="title_balance">Balance</string>
 </resources>
