@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_settings -> {
                 // open settings
-                // TODO: add settings page
+                startActivity(SettingsActivity.newIntent(this))
             }
         }
 
