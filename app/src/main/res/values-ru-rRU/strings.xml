@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Finance Tracker</string>
+    <string name="title_activity_main">Главная</string>
+    <string name="nav_menu_home">Главная</string>
+    <string name="nav_menu_settings">Настройки</string>
+
+    <string name="title_balance">Баланс</string>
+    <string name="title_activity_settings">Настройки</string>
+
+    <!-- Settings for Notifications -->
+    <string name="pref_header_notifications">Уведомления</string>
+
+    <string name="pref_title_new_message_notifications">Уведомлять о новых сообщениях</string>
+
+    <string name="pref_title_ringtone">Рингтон</string>
+    <string name="pref_ringtone_silent">Тишина</string>
+
+    <string name="pref_title_vibrate">Вибрация</string>
+    <string name="nav_menu_about">О приложении</string>
+    <string name="title_activity_about">О приложении</string>
+</resources>
