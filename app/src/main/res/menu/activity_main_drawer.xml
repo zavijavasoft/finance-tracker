@@ -9,6 +9,11 @@
             android:checked="true"
             android:icon="@drawable/ic_menu_main"
             android:title="@string/nav_menu_home" />
+
+        <item
+            android:id="@+id/navItemAbout"
+            android:icon="@drawable/ic_info_black_24dp"
+            android:title="@string/nav_menu_about" />
     </group>
 
     <item
@@ -16,8 +21,4 @@
         android:icon="@drawable/ic_menu_settings"
         android:title="@string/nav_menu_settings" />
 
-    <item
-        android:id="@+id/navItemAbout"
-        android:icon="@drawable/ic_info_black_24dp"
-        android:title="@string/nav_menu_about" />
 </menu>

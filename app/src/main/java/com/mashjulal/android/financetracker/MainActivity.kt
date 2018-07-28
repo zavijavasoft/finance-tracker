@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.navItemAbout -> {
                 // open about page
-                startActivity(AboutActivity.newIntent(this))
+                fragment = AboutFragment.newInstance()
             }
         }
 
