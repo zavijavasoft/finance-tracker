@@ -18,16 +18,6 @@ import kotlinx.android.synthetic.main.fragment_main.*
  */
 class MainFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        rv_menu.adapter = MainMenuRecyclerViewAdapter()
-    }
-
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -35,8 +25,16 @@ class MainFragment : Fragment() {
          *
          * @return A new instance of fragment MainFragment.
          */
-        @JvmStatic
-        fun newInstance() =
-                MainFragment()
+        fun newInstance() = MainFragment()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_main, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        rvMenu.adapter = MainMenuRecyclerViewAdapter()
     }
 }

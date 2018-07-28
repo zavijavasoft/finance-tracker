@@ -7,7 +7,7 @@
     tools:context=".AboutActivity">
 
     <ImageView
-        android:id="@+id/iv_appIcon"
+        android:id="@+id/ivAppIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="56dp"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_appName"
+        android:id="@+id/tvAppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -28,10 +28,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_appIcon" />
+        app:layout_constraintTop_toBottomOf="@+id/ivAppIcon" />
 
     <TextView
-        android:id="@+id/tv_version"
+        android:id="@+id/tvVersion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -39,10 +39,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_appName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvAppName" />
 
     <TextView
-        android:id="@+id/tv_githubLink"
+        android:id="@+id/tvGithubLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -51,11 +51,11 @@
         android:text="@string/github_link"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/iv_githubIcon"
-        app:layout_constraintTop_toBottomOf="@+id/tv_author" />
+        app:layout_constraintStart_toEndOf="@+id/ivGithubIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tvAuthor" />
 
     <TextView
-        android:id="@+id/tv_author"
+        android:id="@+id/tvAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -63,11 +63,11 @@
         android:text="@string/author"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/iv_githubIcon"
-        app:layout_constraintTop_toTopOf="@+id/iv_githubIcon" />
+        app:layout_constraintStart_toEndOf="@+id/ivGithubIcon"
+        app:layout_constraintTop_toTopOf="@+id/ivGithubIcon" />
 
     <ImageView
-        android:id="@+id/iv_githubIcon"
+        android:id="@+id/ivGithubIcon"
         android:layout_width="35dp"
         android:layout_height="38dp"
         android:layout_marginStart="16dp"
@@ -75,6 +75,6 @@
         android:contentDescription="@string/desc_github_icon"
         android:src="@drawable/ic_github"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_version" />
+        app:layout_constraintTop_toBottomOf="@+id/tvVersion" />
 
 </android.support.constraint.ConstraintLayout>

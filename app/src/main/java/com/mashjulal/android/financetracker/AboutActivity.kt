@@ -8,11 +8,6 @@ import android.support.v7.app.AppCompatActivity
 
 class AboutActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
-    }
-
     companion object {
         /**
          * Use this method to start [SettingsActivity].
@@ -20,5 +15,10 @@ class AboutActivity : AppCompatActivity() {
          * @return new intent instance
          */
         fun newIntent(context: Context) = Intent(context, AboutActivity::class.java)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_about)
     }
 }

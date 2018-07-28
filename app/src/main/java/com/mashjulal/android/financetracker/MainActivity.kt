@@ -22,20 +22,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
 
         val toggle = ActionBarDrawerToggle(
-                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        nav_view.setNavigationItemSelectedListener(this)
+        navView.setNavigationItemSelectedListener(this)
 
         // Show main page
         supportFragmentManager.beginTransaction().add(R.id.container, MainFragment.newInstance()).commit()
     }
 
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             // if navigation is visible close it
-            drawer_layout.closeDrawer(GravityCompat.START)
+            drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
@@ -46,15 +46,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         var fragment: Fragment? = null
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_main -> {
+            R.id.navItemMain -> {
                 // open main page
                 fragment = MainFragment.newInstance()
             }
-            R.id.nav_settings -> {
+            R.id.navItemSettings -> {
                 // open settings
                 startActivity(SettingsActivity.newIntent(this))
             }
-            R.id.nav_about -> {
+            R.id.navItemAbout -> {
                 // open about page
                 startActivity(AboutActivity.newIntent(this))
             }
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
         }
 
-        drawer_layout.closeDrawer(GravityCompat.START)
+        drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 }

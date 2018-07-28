@@ -17,6 +17,13 @@ import android.view.ViewGroup
  */
 abstract class AppCompatPreferenceActivity : PreferenceActivity() {
 
+    val supportActionBar: ActionBar?
+        get() = delegate.supportActionBar
+
+    private val delegate: AppCompatDelegate by lazy {
+        AppCompatDelegate.create(this, null)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         delegate.installViewFactory()
         delegate.onCreate(savedInstanceState)
@@ -27,9 +34,6 @@ abstract class AppCompatPreferenceActivity : PreferenceActivity() {
         super.onPostCreate(savedInstanceState)
         delegate.onPostCreate(savedInstanceState)
     }
-
-    val supportActionBar: ActionBar?
-        get() = delegate.supportActionBar
 
     fun setSupportActionBar(toolbar: Toolbar?) {
         delegate.setSupportActionBar(toolbar)
@@ -82,9 +86,5 @@ abstract class AppCompatPreferenceActivity : PreferenceActivity() {
 
     override fun invalidateOptionsMenu() {
         delegate.invalidateOptionsMenu()
-    }
-
-    private val delegate: AppCompatDelegate by lazy {
-        AppCompatDelegate.create(this, null)
     }
 }

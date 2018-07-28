@@ -62,11 +62,8 @@ class MainMenuRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
          * Represents a view with user's current balance in rubles and dollars.
          */
         class BalanceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-            val balanceRubles: TextView = itemView.tv_rubles
-            val balanceDollars: TextView = itemView.tv_dollars
-
+            val balanceRubles: TextView = itemView.tvBalanceRubles
+            val balanceDollars: TextView = itemView.tvBalanceDollars
         }
-
     }
 }
