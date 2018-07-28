@@ -1,12 +1,11 @@
 package com.mashjulal.android.financetracker.financialcalculations
 
 import java.math.BigDecimal
-import java.math.RoundingMode
 
 // Current dollar rate (at 22.07.18)
 // TODO: remove hardcode
 private val DOLLAR_RATE: BigDecimal = BigDecimal.valueOf(63.47)
-        .setScale(2, RoundingMode.HALF_EVEN)
+        .asMoney()
 
 /**
  * Converts rubles to dollars according to current rate.
@@ -14,7 +13,7 @@ private val DOLLAR_RATE: BigDecimal = BigDecimal.valueOf(63.47)
  * @return money amount in dollars
  */
 fun convertRublesToDollars(money: BigDecimal) =
-        (money / DOLLAR_RATE).setScale(2, RoundingMode.HALF_EVEN)!!
+        (money / DOLLAR_RATE).asMoney()
 
 /**
  * Converts dollars to rubles according to current rate.
@@ -22,7 +21,7 @@ fun convertRublesToDollars(money: BigDecimal) =
  * @return money amount in rubles
  */
 fun convertDollarsToRubles(money: BigDecimal) =
-        (money * DOLLAR_RATE).setScale(2, RoundingMode.HALF_EVEN)!!
+        (money * DOLLAR_RATE).asMoney()
 
 /**
  * Calculates total money amount after all operations.
@@ -30,7 +29,7 @@ fun convertDollarsToRubles(money: BigDecimal) =
  * @return result of operations
  */
 fun calculateTotal(operations: List<Operation>): BigDecimal {
-    var total = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN)
+    var total = BigDecimal.ZERO.asMoney()
 
     for (operation in operations) {
         val amount = when (operation.currency) {
@@ -40,7 +39,7 @@ fun calculateTotal(operations: List<Operation>): BigDecimal {
         total += (when (operation.operationType) {
             OperationType.INCOMINGS -> amount
             OperationType.OUTGOINGS -> -amount
-        }).setScale(2, RoundingMode.HALF_EVEN)
+        }).asMoney()
     }
 
     return total

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.mashjulal.android.financetracker.financialcalculations.Currency
 import com.mashjulal.android.financetracker.financialcalculations.convertRublesToDollars
 import kotlinx.android.synthetic.main.item_menu_balance.view.*
 import java.math.BigDecimal
@@ -49,8 +50,10 @@ class MainMenuRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is BalanceViewHolder -> {
-                holder.balanceRubles.text = formatCurrency(RUBLES, "RU")
-                holder.balanceDollars.text = formatCurrency(convertRublesToDollars(RUBLES), "US")
+                holder.balanceRubles.text =
+                        formatCurrency(RUBLES, Currency.RUBLE.symbol)
+                holder.balanceDollars.text =
+                        formatCurrency(convertRublesToDollars(RUBLES), Currency.DOLLAR.symbol)
             }
         }
     }
