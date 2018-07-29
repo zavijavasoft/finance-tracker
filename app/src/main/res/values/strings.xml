@@ -28,4 +28,7 @@
     <string name="desc_github_icon" translatable="false">Github icon</string>
 
     <string name="title_activity_about">About</string>
+    <string name="category_icon_image">Category Icon Image</string>
+    <string name="create_new_operation">Create new operation</string>
+    <string name="show_more">Show more</string>
 </resources>

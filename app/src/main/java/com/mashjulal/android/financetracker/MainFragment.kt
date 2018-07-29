@@ -6,10 +6,15 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.delegateadapter.delegate.diff.DiffUtilCompositeAdapter
-import com.example.delegateadapter.delegate.diff.IComparableItem
+import com.mashjulal.android.financetracker.financialcalculations.Currency
+import com.mashjulal.android.financetracker.financialcalculations.Operation
+import com.mashjulal.android.financetracker.financialcalculations.OperationType
 import com.mashjulal.android.financetracker.recyclerview.BalanceDelegateAdapter
 import com.mashjulal.android.financetracker.recyclerview.BalanceViewModel
+import com.mashjulal.android.financetracker.recyclerview.OperationPreviewDelegateAdapter
+import com.mashjulal.android.financetracker.recyclerview.OperationPreviewViewModel
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.math.BigDecimal
 
@@ -26,8 +31,18 @@ private val RUBLES = BigDecimal(1000.1)
  */
 class MainFragment : Fragment() {
 
-    private val entries = listOf<IComparableItem>(
-            BalanceViewModel(RUBLES)
+    private val entries = listOf(
+            BalanceViewModel(RUBLES),
+            OperationPreviewViewModel("Incomings", RUBLES, Currency.RUBLE, listOf(
+                    Operation(OperationType.INCOMINGS, BigDecimal.valueOf(100), Currency.RUBLE),
+                    Operation(OperationType.INCOMINGS, BigDecimal.valueOf(100), Currency.RUBLE),
+                    Operation(OperationType.INCOMINGS, BigDecimal.valueOf(100), Currency.RUBLE)
+            ), false),
+            OperationPreviewViewModel("Outgoings", BigDecimal.valueOf(2000), Currency.RUBLE, listOf(
+                    Operation(OperationType.OUTGOINGS, BigDecimal.valueOf(133), Currency.RUBLE),
+                    Operation(OperationType.OUTGOINGS, BigDecimal.valueOf(4324), Currency.RUBLE),
+                    Operation(OperationType.OUTGOINGS, BigDecimal.valueOf(1321), Currency.RUBLE)
+            ), true)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,8 +63,17 @@ class MainFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val incomingsClick = View.OnClickListener {
+            Toast.makeText(context, "Stub for incomings screen", Toast.LENGTH_SHORT).show()
+        }
+        val outgoingsClick = View.OnClickListener {
+            Toast.makeText(context, "Stub for outgoings screen", Toast.LENGTH_SHORT).show()
+        }
+
         val adapter = DiffUtilCompositeAdapter.Builder()
                 .add(BalanceDelegateAdapter())
+                .add(OperationPreviewDelegateAdapter(incomingsClick))
+                .add(OperationPreviewDelegateAdapter(outgoingsClick))
                 .build()
         rvMenu.adapter = adapter
         adapter.swapData(entries)
