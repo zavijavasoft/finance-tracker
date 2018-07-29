@@ -1,20 +1,17 @@
 package com.mashjulal.android.financetracker
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.example.delegateadapter.delegate.diff.DiffUtilCompositeAdapter
 import com.mashjulal.android.financetracker.financialcalculations.Currency
 import com.mashjulal.android.financetracker.financialcalculations.Operation
 import com.mashjulal.android.financetracker.financialcalculations.OperationType
-import com.mashjulal.android.financetracker.recyclerview.BalanceDelegateAdapter
-import com.mashjulal.android.financetracker.recyclerview.BalanceViewModel
-import com.mashjulal.android.financetracker.recyclerview.OperationPreviewDelegateAdapter
-import com.mashjulal.android.financetracker.recyclerview.OperationPreviewViewModel
+import com.mashjulal.android.financetracker.recyclerview.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.math.BigDecimal
 
@@ -31,14 +28,15 @@ private val RUBLES = BigDecimal(1000.1)
  */
 class MainFragment : Fragment() {
 
+    private var listener: OnFragmentInteractionListener? = null
     private val entries = listOf(
             BalanceViewModel(RUBLES),
-            OperationPreviewViewModel("Incomings", RUBLES, Currency.RUBLE, listOf(
+            IncomingsPreviewViewModel(RUBLES, Currency.RUBLE, listOf(
                     Operation(OperationType.INCOMINGS, BigDecimal.valueOf(100), Currency.RUBLE),
                     Operation(OperationType.INCOMINGS, BigDecimal.valueOf(100), Currency.RUBLE),
                     Operation(OperationType.INCOMINGS, BigDecimal.valueOf(100), Currency.RUBLE)
             ), false),
-            OperationPreviewViewModel("Outgoings", BigDecimal.valueOf(2000), Currency.RUBLE, listOf(
+            OutgoingsPreviewViewModel(BigDecimal.valueOf(2000), Currency.RUBLE, listOf(
                     Operation(OperationType.OUTGOINGS, BigDecimal.valueOf(133), Currency.RUBLE),
                     Operation(OperationType.OUTGOINGS, BigDecimal.valueOf(4324), Currency.RUBLE),
                     Operation(OperationType.OUTGOINGS, BigDecimal.valueOf(1321), Currency.RUBLE)
@@ -56,6 +54,20 @@ class MainFragment : Fragment() {
                 getString(R.string.title_activity_main)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnFragmentInteractionListener) {
+            listener = context
+        } else {
+            throw ClassCastException(context.toString() + " must implement OnFragmentInteractionListener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -63,17 +75,17 @@ class MainFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val incomingsClick = View.OnClickListener {
-            Toast.makeText(context, "Stub for incomings screen", Toast.LENGTH_SHORT).show()
+        val newIncomingOperationClick = View.OnClickListener {
+            listener!!.onAddIncomingsClicked()
         }
-        val outgoingsClick = View.OnClickListener {
-            Toast.makeText(context, "Stub for outgoings screen", Toast.LENGTH_SHORT).show()
+        val newOutgoingOperationClick = View.OnClickListener {
+            listener!!.onAddOutgoingsClicked()
         }
 
         val adapter = DiffUtilCompositeAdapter.Builder()
                 .add(BalanceDelegateAdapter())
-                .add(OperationPreviewDelegateAdapter(incomingsClick))
-                .add(OperationPreviewDelegateAdapter(outgoingsClick))
+                .add(IncomingsPreviewDelegateAdapter(getString(R.string.incomings), newIncomingOperationClick))
+                .add(OutgoingsPreviewDelegateAdapter(getString(R.string.outgoings), newOutgoingOperationClick))
                 .build()
         rvMenu.adapter = adapter
         adapter.swapData(entries)
@@ -87,5 +99,10 @@ class MainFragment : Fragment() {
          * @return A new instance of fragment MainFragment.
          */
         fun newInstance() = MainFragment()
+    }
+
+    interface OnFragmentInteractionListener {
+        fun onAddIncomingsClicked()
+        fun onAddOutgoingsClicked()
     }
 }

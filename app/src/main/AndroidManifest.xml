@@ -25,6 +25,10 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MainActivity" />
+        <activity
+            android:label="@string/title_activity_edit_operation"
+            android:name=".EditOperationActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

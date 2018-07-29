@@ -1,5 +1,7 @@
 package com.mashjulal.android.financetracker
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -10,11 +12,13 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
+private const val RC_NEW_OPERATION = 1
+
 /**
  * Application main activity.
  * Contains main actions with user finance.
  */
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,5 +70,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun onAddIncomingsClicked() {
+        startActivityForResult(
+                EditOperationActivity.newIntent(this, "incomings"),
+                RC_NEW_OPERATION)
+    }
+
+    override fun onAddOutgoingsClicked() {
+        startActivityForResult(
+                EditOperationActivity.newIntent(this, "outgoings"),
+                RC_NEW_OPERATION)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_NEW_OPERATION && resultCode == Activity.RESULT_OK && data != null) {
+            updateOperations(data.extras)
+        }
+    }
+
+    private fun updateOperations(bundle: Bundle) {
+
     }
 }

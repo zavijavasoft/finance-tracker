@@ -31,4 +31,15 @@
     <string name="category_icon_image">Category Icon Image</string>
     <string name="create_new_operation">Create new operation</string>
     <string name="show_more">Show more</string>
+    <string name="zero" translatable="false">0</string>
+    <string name="done">Done</string>
+    <string name="currency">Currency</string>
+    <string name="type">Operation Type</string>
+    <string name="category">Category</string>
+    <string name="date">Date</string>
+    <string name="incomings">Incomings</string>
+    <string name="outgoings">Outgoings</string>
+
+    <string name="title_activity_edit_operation">Operation…</string>
+
 </resources>
