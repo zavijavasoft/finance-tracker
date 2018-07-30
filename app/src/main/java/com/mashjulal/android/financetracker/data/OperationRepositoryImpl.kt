@@ -47,4 +47,8 @@ class OperationRepositoryImpl : OperationRepository {
         data[id] = operation
         return id
     }
+
+    override fun getByAccountAfter(account: Account, date: Date): List<Operation> {
+        return data.asSequence().map { it.value }.filter { it.account == account && it.date.after(date) }.toList()
+    }
 }

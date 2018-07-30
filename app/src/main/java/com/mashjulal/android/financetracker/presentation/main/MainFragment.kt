@@ -3,16 +3,19 @@ package com.mashjulal.android.financetracker.presentation.main
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import com.example.delegateadapter.delegate.diff.DiffUtilCompositeAdapter
 import com.example.delegateadapter.delegate.diff.IComparableItem
 import com.mashjulal.android.financetracker.R
+import com.mashjulal.android.financetracker.data.AccountRepositoryImpl
 import com.mashjulal.android.financetracker.data.BalanceRepositoryImpl
 import com.mashjulal.android.financetracker.data.OperationRepositoryImpl
+import com.mashjulal.android.financetracker.domain.financialcalculations.Account
 import com.mashjulal.android.financetracker.domain.interactor.RefreshMainScreenDataInteractorImpl
+import com.mashjulal.android.financetracker.domain.interactor.RequestAccountInteractorImpl
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.balance.BalanceDelegateAdapter
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.IncomingsPreviewDelegateAdapter
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.OutgoingsPreviewDelegateAdapter
@@ -30,19 +33,40 @@ class MainFragment : Fragment(), MainPresenter.View {
 
     private var presenter: MainPresenter? = null
     private var listener: OnFragmentInteractionListener? = null
+    private lateinit var spinnerAccounts: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        presenter = MainPresenter(RefreshMainScreenDataInteractorImpl(
-                BalanceRepositoryImpl(), OperationRepositoryImpl()
-        ))
-        setupActionBar()
+        presenter = MainPresenter(
+                RefreshMainScreenDataInteractorImpl(BalanceRepositoryImpl(), OperationRepositoryImpl()),
+                RequestAccountInteractorImpl(AccountRepositoryImpl()))
+        presenter?.attachView(this)
+
+        setHasOptionsMenu(true)
     }
 
-    private fun setupActionBar() {
-        (activity as AppCompatActivity).supportActionBar?.title =
-                getString(R.string.title_activity_main)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.menu_fragment_main, menu)
+
+        val item = menu.findItem(R.id.menuSpinnerAccounts)
+        spinnerAccounts = item.actionView as Spinner
+        spinnerAccounts.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+            override fun onNothingSelected(parentView: AdapterView<*>?) {}
+
+            override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?,
+                                        position: Int, id: Long) {
+                val accountTitle = spinnerAccounts.adapter.getItem(position) as String
+                if (accountTitle == getString(R.string.all_accounts)) {
+                    presenter?.refreshData()
+                } else {
+                    presenter?.refreshData(accountTitle)
+                }
+            }
+        }
+        presenter?.getAccountList()
     }
 
     override fun onAttach(context: Context) {
@@ -57,7 +81,6 @@ class MainFragment : Fragment(), MainPresenter.View {
     override fun onResume() {
         super.onResume()
         presenter?.attachView(this)
-        presenter?.refreshData()
     }
 
     override fun onPause() {
@@ -95,7 +118,13 @@ class MainFragment : Fragment(), MainPresenter.View {
     override fun refreshData(data: List<IComparableItem>) {
         val adapter = rvMenu.adapter as DiffUtilCompositeAdapter
         adapter.swapData(data)
-        adapter.notifyDataSetChanged()
+    }
+
+    override fun setAccounts(data: List<Account>) {
+        val entries = listOf(getString(R.string.all_accounts)) + data.map { it.title }
+        val adapter = ArrayAdapter<String>(context,
+                android.R.layout.simple_spinner_dropdown_item, entries)
+        spinnerAccounts.adapter = adapter
     }
 
     companion object {

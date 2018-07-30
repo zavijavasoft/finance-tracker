@@ -30,4 +30,6 @@
     <string name="incomings">Доходы</string>
     <string name="outgoings">Расходы</string>
     <string name="title_activity_edit_operation">Операция…</string>
+    <string name="accounts">Аккаунты</string>
+    <string name="all_accounts">Все</string>
 </resources>

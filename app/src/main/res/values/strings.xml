@@ -41,5 +41,6 @@
     <string name="outgoings">Outgoings</string>
 
     <string name="title_activity_edit_operation">Operation…</string>
-
+    <string name="accounts">Accounts</string>
+    <string name="all_accounts">All</string>
 </resources>

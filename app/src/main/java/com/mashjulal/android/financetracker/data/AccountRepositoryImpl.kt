@@ -6,7 +6,8 @@ import com.mashjulal.android.financetracker.domain.repository.AccountRepository
 class AccountRepositoryImpl : AccountRepository {
 
     private val data: HashMap<Long, Account> = hashMapOf(
-            1L to Account("John Smith")
+            1L to Account("John Smith"),
+            2L to Account("John Smith Credit Card")
     )
 
     override fun getById(id: Long): Account? {

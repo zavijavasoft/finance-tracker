@@ -10,13 +10,13 @@ import java.util.*
 
 // TODO: remove hardcode
 private val calendar = Calendar.getInstance()
-private val account = Account("John Smith")
 private val tomorrow = Date(calendar.timeInMillis + 1000 * 60 * 60 * 24)
 
 class BalanceRepositoryImpl : BalanceRepository {
 
     private val data: HashMap<Int, Balance> = hashMapOf(
-            1 to Balance(account, Money(BigDecimal.ZERO, Currency.RUBLE), tomorrow)
+            1 to Balance(Account("John Smith"), Money(BigDecimal.ZERO, Currency.RUBLE), tomorrow),
+            2 to Balance(Account("John Smith Credit Card"), Money(BigDecimal.ZERO, Currency.RUBLE), tomorrow)
     )
 
     override fun getByAccount(account: Account): List<Balance> {
