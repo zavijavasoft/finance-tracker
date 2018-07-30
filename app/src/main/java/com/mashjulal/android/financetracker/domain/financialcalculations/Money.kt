@@ -10,17 +10,7 @@ data class Money(
 
     constructor(money: Money, currency: Currency) : this(money.amount, currency)
 
-    operator fun plus(other: Money): Money {
-        return if (currency == other.currency) {
-            Money(amount + other.amount, currency)
-        } else {
-            if (currency == Currency.DOLLAR) {
-                Money(amount + convertRublesToDollars(other).amount, Currency.DOLLAR)
-            } else {
-                Money(amount + convertDollarsToRubles(other).amount, Currency.RUBLE)
-            }
-        }
-    }
+    operator fun plus(other: Money): Money = Money(amount + other.amount, currency)
 
     operator fun times(other: BigDecimal): Money = Money(amount * other, currency)
 
@@ -29,4 +19,6 @@ data class Money(
     operator fun minus(other: Money) = this + -other
 
     operator fun unaryMinus(): Money = Money(-amount, currency)
+
+    fun abs(): Money = Money(amount.abs(), currency)
 }

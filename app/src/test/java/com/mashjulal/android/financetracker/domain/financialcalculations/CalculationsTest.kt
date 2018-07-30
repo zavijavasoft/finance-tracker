@@ -8,66 +8,6 @@ import java.util.*
 class CalculationsTest {
 
     @Test
-    fun `Test convertRublesToDollars with amount above 0`() {
-        val amount = Money(BigDecimal.valueOf(111), Currency.RUBLE)
-
-        val expected = Money(BigDecimal.valueOf(1.75), Currency.DOLLAR)
-        val actual = convertRublesToDollars(amount)
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `Test convertRublesToDollars with amount below 0`() {
-        val amount = Money(BigDecimal.valueOf(-111), Currency.RUBLE)
-
-        val expected = Money(BigDecimal.valueOf(-1.75), Currency.DOLLAR)
-        val actual = convertRublesToDollars(amount)
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `Test convertRublesToDollars with amount equals 0`() {
-        val amount = Money(BigDecimal.valueOf(0), Currency.RUBLE)
-
-        val expected = Money(BigDecimal.valueOf(0).asMoney(), Currency.DOLLAR)
-        val actual = convertRublesToDollars(amount)
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `Test convertDollarsToRubles with amount above 0`() {
-        val amount = Money(BigDecimal.valueOf(111), Currency.RUBLE)
-
-        val expected = Money(BigDecimal.valueOf(7045.17), Currency.RUBLE)
-        val actual = convertDollarsToRubles(amount)
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `Test convertDollarsToRubles with amount below 0`() {
-        val amount = Money(BigDecimal.valueOf(-111), Currency.DOLLAR)
-
-        val expected = Money(BigDecimal.valueOf(-7045.17), Currency.RUBLE)
-        val actual = convertDollarsToRubles(amount)
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `Test convertDollarsToRubles with amount equals 0`() {
-        val amount = Money(BigDecimal.valueOf(0), Currency.DOLLAR)
-
-        val expected = Money(BigDecimal.valueOf(0).asMoney(), Currency.RUBLE)
-        val actual = convertDollarsToRubles(amount)
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
     fun `Test calculateTotal with only incomings`() {
         val operations: MutableList<Operation> = mutableListOf(
                 initIncomings(BigDecimal.valueOf(10), Currency.RUBLE),
@@ -145,7 +85,17 @@ class CalculationsTest {
                 initOutgoings(BigDecimal.valueOf(20), Currency.RUBLE)
         )
 
-        val expected = Money(BigDecimal.valueOf(-982.05), Currency.RUBLE)
+        val expected = Money(BigDecimal.valueOf(-973.87), Currency.RUBLE)
+        val actual = calculateTotal(operations, BigDecimal(62.924896))
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `Test calculateTotal with empty list`() {
+        val operations: MutableList<Operation> = mutableListOf()
+
+        val expected = Money(BigDecimal.ZERO, Currency.RUBLE)
         val actual = calculateTotal(operations)
 
         assertEquals(expected, actual)

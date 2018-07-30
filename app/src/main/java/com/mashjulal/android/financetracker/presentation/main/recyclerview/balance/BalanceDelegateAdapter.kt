@@ -2,7 +2,6 @@ package com.mashjulal.android.financetracker.presentation.main.recyclerview.bala
 
 import com.example.delegateadapter.delegate.KDelegateAdapter
 import com.mashjulal.android.financetracker.R
-import com.mashjulal.android.financetracker.domain.financialcalculations.convertRublesToDollars
 import com.mashjulal.android.financetracker.formatCurrency
 import kotlinx.android.synthetic.main.item_menu_balance.*
 
@@ -17,7 +16,7 @@ class BalanceDelegateAdapter : KDelegateAdapter<BalanceViewModel>() {
         tvBalanceRubles.text =
                 formatCurrency(item.balanceInRubles)
         tvBalanceDollars.text =
-                formatCurrency(convertRublesToDollars(item.balanceInRubles))
+                formatCurrency(item.balanceInDollars)
     }
 
 }

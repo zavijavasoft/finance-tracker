@@ -12,7 +12,9 @@ import com.example.delegateadapter.delegate.diff.IComparableItem
 import com.mashjulal.android.financetracker.R
 import com.mashjulal.android.financetracker.data.AccountRepositoryImpl
 import com.mashjulal.android.financetracker.data.BalanceRepositoryImpl
+import com.mashjulal.android.financetracker.data.CurrencyRepositoryImpl
 import com.mashjulal.android.financetracker.data.OperationRepositoryImpl
+import com.mashjulal.android.financetracker.data.currencyconvertapi.RetrofitHelper
 import com.mashjulal.android.financetracker.domain.financialcalculations.Account
 import com.mashjulal.android.financetracker.domain.interactor.RefreshMainScreenDataInteractorImpl
 import com.mashjulal.android.financetracker.domain.interactor.RequestAccountInteractorImpl
@@ -39,7 +41,9 @@ class MainFragment : Fragment(), MainPresenter.View {
         super.onCreate(savedInstanceState)
 
         presenter = MainPresenter(
-                RefreshMainScreenDataInteractorImpl(BalanceRepositoryImpl(), OperationRepositoryImpl()),
+                RefreshMainScreenDataInteractorImpl(
+                        BalanceRepositoryImpl(),
+                        OperationRepositoryImpl(), CurrencyRepositoryImpl(RetrofitHelper())),
                 RequestAccountInteractorImpl(AccountRepositoryImpl()))
         presenter?.attachView(this)
 
