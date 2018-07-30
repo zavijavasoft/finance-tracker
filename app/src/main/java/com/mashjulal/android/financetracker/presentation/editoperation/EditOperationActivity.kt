@@ -1,4 +1,4 @@
-package com.mashjulal.android.financetracker
+package com.mashjulal.android.financetracker.presentation.editoperation
 
 import android.app.Activity
 import android.app.DatePickerDialog
@@ -9,25 +9,31 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
+import com.mashjulal.android.financetracker.R
+import com.mashjulal.android.financetracker.data.OperationRepositoryImpl
+import com.mashjulal.android.financetracker.domain.financialcalculations.*
+import com.mashjulal.android.financetracker.domain.financialcalculations.Currency
+import com.mashjulal.android.financetracker.domain.interactor.AddOperationInteractorImpl
 import kotlinx.android.synthetic.main.activity_edit_operation.*
+import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val ARG_AMOUNT = "amount"
-private const val ARG_CURRENCY = "currency"
-private const val ARG_DATE = "date"
 private const val ARG_OPERATION_TYPE = "type"
-private const val ARG_CATEGORY = "category"
 
 private const val MAX_AMOUNT_DIGIT_COUNT = 12
 
-class EditOperationActivity : AppCompatActivity() {
+class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
 
+    private lateinit var presenter: EditOperationPresenter
     private val calendar: Calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_operation)
+
+        // TODO: di
+        presenter = EditOperationPresenter(AddOperationInteractorImpl(OperationRepositoryImpl()))
 
         parseArgs()
         initLayout()
@@ -115,21 +121,35 @@ class EditOperationActivity : AppCompatActivity() {
     }
 
     private fun finishEdit() {
-        val amount = etAmount.text.toString()
-        val currency = spinnerCurrency.selectedItem.toString()
-        val date = calendar.timeInMillis
+        val amount = BigDecimal(etAmount.text.toString())
+        val currency = if (spinnerCurrency.selectedItem.toString() == "$") Currency.DOLLAR else Currency.RUBLE
+        val date = calendar.time
         val operationType = spinnerOperationType.selectedItem.toString()
-        val category = spinnerCategory.selectedItem.toString()
+        val category = Category(spinnerCategory.selectedItem.toString(), R.drawable.ic_github)
 
-        val resultData = with(Intent()) {
-            putExtra(ARG_AMOUNT, amount)
-            putExtra(ARG_CURRENCY, currency)
-            putExtra(ARG_DATE, date)
-            putExtra(ARG_OPERATION_TYPE, operationType)
-            putExtra(ARG_CATEGORY, category)
+        val operation: Operation = when (operationType) {
+            getString(R.string.incomings) ->
+                IncomingsOperation(Money(amount, currency), category, date, Account("John Smith"))
+            getString(R.string.outgoings) ->
+                OutgoingsOperation(Money(amount, currency), category, date, Account("John Smith"))
+            else -> throw Exception("Wrong operation type $operationType")
         }
-        setResult(Activity.RESULT_OK, resultData)
+        presenter.saveOperation(operation)
+    }
+
+    override fun closeEditWindow() {
+        setResult(Activity.RESULT_OK)
         finish()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter.attachView(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.detachView()
     }
 
     companion object {

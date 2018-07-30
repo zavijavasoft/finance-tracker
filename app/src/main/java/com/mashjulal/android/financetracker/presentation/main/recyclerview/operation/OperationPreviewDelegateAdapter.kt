@@ -1,4 +1,4 @@
-package com.mashjulal.android.financetracker.recyclerview
+package com.mashjulal.android.financetracker.presentation.main.recyclerview.operation
 
 import android.view.View
 import com.example.delegateadapter.delegate.KDelegateAdapter
@@ -26,7 +26,7 @@ sealed class OperationPreviewDelegateAdapter(
                 adapter.swapData(item.operations.map { OperationDetailsViewModel(it) })
                 btnShowMore.visibility = if (item.hasMore) View.VISIBLE else View.GONE
                 btnNewOperation.setOnClickListener(onClickListener)
-                tvTotal.text = formatCurrency(item.balance, item.currency.symbol)
+                tvTotal.text = formatCurrency(item.balance)
             }
 }
 

@@ -1,7 +1,7 @@
-package com.mashjulal.android.financetracker.recyclerview
+package com.mashjulal.android.financetracker.presentation.main.recyclerview.operation
 
 import com.example.delegateadapter.delegate.diff.IComparableItem
-import com.mashjulal.android.financetracker.financialcalculations.Operation
+import com.mashjulal.android.financetracker.domain.financialcalculations.Operation
 
 class OperationDetailsViewModel(val operation: Operation) : IComparableItem {
 

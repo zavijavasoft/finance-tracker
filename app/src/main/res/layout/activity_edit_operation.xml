@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:elevation="10dp"
     android:fadingEdgeLength="12dp"
-    tools:context=".EditOperationActivity">
+    tools:context=".presentation.editoperation.EditOperationActivity">
 
     <Spinner
         android:id="@+id/spinnerCategory"

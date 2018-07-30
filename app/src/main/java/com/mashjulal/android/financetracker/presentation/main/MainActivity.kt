@@ -1,7 +1,5 @@
-package com.mashjulal.android.financetracker
+package com.mashjulal.android.financetracker.presentation.main
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -9,10 +7,12 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.mashjulal.android.financetracker.R
+import com.mashjulal.android.financetracker.domain.financialcalculations.OperationType
+import com.mashjulal.android.financetracker.presentation.editoperation.EditOperationActivity
+import com.mashjulal.android.financetracker.presentation.settings.SettingsActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-
-private const val RC_NEW_OPERATION = 1
 
 /**
  * Application main activity.
@@ -33,7 +33,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setNavigationItemSelectedListener(this)
 
         // Show main page
-        supportFragmentManager.beginTransaction().add(R.id.container, MainFragment.newInstance()).commit()
+        val fragment = MainFragment.newInstance()
+        supportFragmentManager.beginTransaction().add(R.id.container, fragment).commit()
     }
 
     override fun onBackPressed() {
@@ -73,25 +74,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onAddIncomingsClicked() {
-        startActivityForResult(
-                EditOperationActivity.newIntent(this, "incomings"),
-                RC_NEW_OPERATION)
+        startActivity(EditOperationActivity.newIntent(this, OperationType.INCOMINGS.name))
     }
 
     override fun onAddOutgoingsClicked() {
-        startActivityForResult(
-                EditOperationActivity.newIntent(this, "outgoings"),
-                RC_NEW_OPERATION)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_NEW_OPERATION && resultCode == Activity.RESULT_OK && data != null) {
-            updateOperations(data.extras)
-        }
-    }
-
-    private fun updateOperations(bundle: Bundle) {
-
+        startActivity(EditOperationActivity.newIntent(this, OperationType.OUTGOINGS.name))
     }
 }

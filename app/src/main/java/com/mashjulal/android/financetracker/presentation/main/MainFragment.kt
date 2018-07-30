@@ -1,4 +1,4 @@
-package com.mashjulal.android.financetracker
+package com.mashjulal.android.financetracker.presentation.main
 
 import android.content.Context
 import android.os.Bundle
@@ -8,15 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.delegateadapter.delegate.diff.DiffUtilCompositeAdapter
-import com.mashjulal.android.financetracker.financialcalculations.Currency
-import com.mashjulal.android.financetracker.financialcalculations.Operation
-import com.mashjulal.android.financetracker.financialcalculations.OperationType
-import com.mashjulal.android.financetracker.recyclerview.*
+import com.example.delegateadapter.delegate.diff.IComparableItem
+import com.mashjulal.android.financetracker.R
+import com.mashjulal.android.financetracker.data.BalanceRepositoryImpl
+import com.mashjulal.android.financetracker.data.OperationRepositoryImpl
+import com.mashjulal.android.financetracker.domain.interactor.RefreshMainScreenDataInteractorImpl
+import com.mashjulal.android.financetracker.presentation.main.recyclerview.balance.BalanceDelegateAdapter
+import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.IncomingsPreviewDelegateAdapter
+import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.OutgoingsPreviewDelegateAdapter
 import kotlinx.android.synthetic.main.fragment_main.*
-import java.math.BigDecimal
-
-// TODO: remove hardcode
-private val RUBLES = BigDecimal(1000.1)
 
 /**
  * A simple [Fragment] subclass for main page.
@@ -26,26 +26,17 @@ private val RUBLES = BigDecimal(1000.1)
  * create an instance of this fragment.
  *
  */
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), MainPresenter.View {
 
+    private var presenter: MainPresenter? = null
     private var listener: OnFragmentInteractionListener? = null
-    private val entries = listOf(
-            BalanceViewModel(RUBLES),
-            IncomingsPreviewViewModel(RUBLES, Currency.RUBLE, listOf(
-                    Operation(OperationType.INCOMINGS, BigDecimal.valueOf(100), Currency.RUBLE),
-                    Operation(OperationType.INCOMINGS, BigDecimal.valueOf(100), Currency.RUBLE),
-                    Operation(OperationType.INCOMINGS, BigDecimal.valueOf(100), Currency.RUBLE)
-            ), false),
-            OutgoingsPreviewViewModel(BigDecimal.valueOf(2000), Currency.RUBLE, listOf(
-                    Operation(OperationType.OUTGOINGS, BigDecimal.valueOf(133), Currency.RUBLE),
-                    Operation(OperationType.OUTGOINGS, BigDecimal.valueOf(4324), Currency.RUBLE),
-                    Operation(OperationType.OUTGOINGS, BigDecimal.valueOf(1321), Currency.RUBLE)
-            ), true)
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        presenter = MainPresenter(RefreshMainScreenDataInteractorImpl(
+                BalanceRepositoryImpl(), OperationRepositoryImpl()
+        ))
         setupActionBar()
     }
 
@@ -61,6 +52,17 @@ class MainFragment : Fragment() {
         } else {
             throw ClassCastException(context.toString() + " must implement OnFragmentInteractionListener")
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter?.attachView(this)
+        presenter?.refreshData()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter?.detachView()
     }
 
     override fun onDetach() {
@@ -88,7 +90,12 @@ class MainFragment : Fragment() {
                 .add(OutgoingsPreviewDelegateAdapter(getString(R.string.outgoings), newOutgoingOperationClick))
                 .build()
         rvMenu.adapter = adapter
-        adapter.swapData(entries)
+    }
+
+    override fun refreshData(data: List<IComparableItem>) {
+        val adapter = rvMenu.adapter as DiffUtilCompositeAdapter
+        adapter.swapData(data)
+        adapter.notifyDataSetChanged()
     }
 
     companion object {
