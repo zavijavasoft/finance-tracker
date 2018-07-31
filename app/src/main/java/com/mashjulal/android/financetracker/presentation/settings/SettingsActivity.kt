@@ -47,11 +47,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
          */
         private fun setSummaryToListPreference(
                 preference: ListPreference, stringValue: String) {
-            // For list preferences, look up the correct display value in
-            // the preference's 'entries' list.
             val index = preference.findIndexOfValue(stringValue)
-
-            // Set the summary to reflect the new value.
             val summary = if (index >= 0) preference.entries[index] else null
             preference.summary = summary
         }
@@ -61,8 +57,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
          */
         private fun setSummaryToRingtonePreference(
                 preference: RingtonePreference, stringValue: String) {
-            // For ringtone preferences, look up the correct display value
-            // using RingtoneManager.
             if (TextUtils.isEmpty(stringValue)) {
                 // Empty values correspond to 'silent' (no ringtone).
                 preference.setSummary(R.string.pref_ringtone_silent)
@@ -73,8 +67,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                     // Clear the summary if there was a lookup error.
                     preference.summary = null
                 } else {
-                    // Set the summary to reflect the new ringtone display
-                    // name.
                     val name = ringtone.getTitle(preference.context)
                     preference.summary = name
                 }
@@ -100,11 +92,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
          * @see .bindPreferenceSummaryToValueListener
          */
         private fun bindPreferenceSummaryToValue(preference: Preference) {
-            // Set the listener to watch for value changes.
             preference.onPreferenceChangeListener = bindPreferenceSummaryToValueListener
-
-            // Trigger the listener immediately with the preference's
-            // current value.
             val currentValue = PreferenceManager.getDefaultSharedPreferences(preference.context)
                     .getString(preference.key, "")
             bindPreferenceSummaryToValueListener.onPreferenceChange(preference, currentValue)
@@ -174,10 +162,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             addPreferencesFromResource(R.xml.pref_notification)
             setHasOptionsMenu(true)
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
             bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"))
         }
     }

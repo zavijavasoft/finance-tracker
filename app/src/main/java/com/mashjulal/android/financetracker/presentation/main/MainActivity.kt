@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
         var fragment: Fragment? = null
-        // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.navItemMain -> {
                 // open main page
