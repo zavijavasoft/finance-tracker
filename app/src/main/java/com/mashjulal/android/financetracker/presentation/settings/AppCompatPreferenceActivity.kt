@@ -1,4 +1,4 @@
-package com.mashjulal.android.financetracker
+package com.mashjulal.android.financetracker.presentation.settings
 
 import android.content.res.Configuration
 import android.os.Bundle

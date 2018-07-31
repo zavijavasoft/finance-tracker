@@ -1,4 +1,4 @@
-package com.mashjulal.android.financetracker
+package com.mashjulal.android.financetracker.presentation.main
 
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -7,6 +7,10 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.mashjulal.android.financetracker.R
+import com.mashjulal.android.financetracker.domain.financialcalculations.OperationType
+import com.mashjulal.android.financetracker.presentation.editoperation.EditOperationActivity
+import com.mashjulal.android.financetracker.presentation.settings.SettingsActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -14,7 +18,7 @@ import kotlinx.android.synthetic.main.app_bar_main.*
  * Application main activity.
  * Contains main actions with user finance.
  */
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +33,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setNavigationItemSelectedListener(this)
 
         // Show main page
-        supportFragmentManager.beginTransaction().add(R.id.container, MainFragment.newInstance()).commit()
+        val fragment = MainFragment.newInstance()
+        supportFragmentManager.beginTransaction().add(R.id.container, fragment).commit()
     }
 
     override fun onBackPressed() {
@@ -66,5 +71,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun onAddIncomingsClicked() {
+        startActivity(EditOperationActivity.newIntent(this, OperationType.INCOMINGS.name))
+    }
+
+    override fun onAddOutgoingsClicked() {
+        startActivity(EditOperationActivity.newIntent(this, OperationType.OUTGOINGS.name))
     }
 }

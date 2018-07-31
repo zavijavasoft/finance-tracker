@@ -1,4 +1,4 @@
-package com.mashjulal.android.financetracker
+package com.mashjulal.android.financetracker.presentation.main
 
 
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.mashjulal.android.financetracker.R
 
 
 /**

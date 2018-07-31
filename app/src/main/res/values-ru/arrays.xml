@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="category_entries">
+        <item>Заработная плата</item>
+        <item>Счета</item>
+        <item>Развлечения</item>
+    </string-array>
+
+    <string-array name="operation_type_entries">
+        <item>Доходы</item>
+        <item>Расходы</item>
+    </string-array>
+</resources>

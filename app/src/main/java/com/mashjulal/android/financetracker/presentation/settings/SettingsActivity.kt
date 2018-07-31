@@ -1,4 +1,4 @@
-package com.mashjulal.android.financetracker
+package com.mashjulal.android.financetracker.presentation.settings
 
 import android.annotation.TargetApi
 import android.content.Context
@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.preference.*
 import android.text.TextUtils
 import android.view.MenuItem
+import com.mashjulal.android.financetracker.R
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On

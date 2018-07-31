@@ -1,4 +1,4 @@
-package com.mashjulal.android.financetracker.financialcalculations
+package com.mashjulal.android.financetracker.domain.financialcalculations
 
 import com.mashjulal.android.financetracker.formatCurrency
 import junit.framework.TestCase.assertEquals
@@ -12,80 +12,80 @@ class UtilsTest {
 
     @Test
     fun `Test formatCurrency() with rubles`() {
-        val money = BigDecimal.ONE.asMoney()
+        val money = Money(BigDecimal.ONE, Currency.RUBLE)
 
         val expected = "1.00 $SYMBOL_RUBLE"
-        val actual = formatCurrency(money, SYMBOL_RUBLE)
+        val actual = formatCurrency(money)
 
         assertEquals(expected, actual)
     }
 
     @Test
     fun `Test formatCurrency() with dollar`() {
-        val money = BigDecimal.ONE.asMoney()
+        val money = Money(BigDecimal.ONE, Currency.DOLLAR)
 
         val expected = "1.00 $SYMBOL_DOLLAR"
-        val actual = formatCurrency(money, SYMBOL_DOLLAR)
+        val actual = formatCurrency(money)
 
         assertEquals(expected, actual)
     }
 
     @Test
     fun `Test formatCurrency() with amount above 0`() {
-        val money = BigDecimal.TEN.asMoney()
+        val money = Money(BigDecimal.TEN.asMoney(), Currency.DOLLAR)
 
         val expected = "10.00 $SYMBOL_DOLLAR"
-        val actual = formatCurrency(money, SYMBOL_DOLLAR)
+        val actual = formatCurrency(money)
 
         assertEquals(expected, actual)
     }
 
     @Test
     fun `Test formatCurrency() with amount above 1000`() {
-        val money = BigDecimal.valueOf(9999).asMoney()
+        val money = Money(BigDecimal.valueOf(9999), Currency.DOLLAR)
 
         val expected = "9,999.00 $SYMBOL_DOLLAR"
-        val actual = formatCurrency(money, SYMBOL_DOLLAR)
+        val actual = formatCurrency(money)
 
         assertEquals(expected, actual)
     }
 
     @Test
     fun `Test formatCurrency() with amount below 0`() {
-        val money = BigDecimal.valueOf(-12).asMoney()
+        val money = Money(BigDecimal.valueOf(-12), Currency.DOLLAR)
 
         val expected = "-12.00 $SYMBOL_DOLLAR"
-        val actual = formatCurrency(money, SYMBOL_DOLLAR)
+        val actual = formatCurrency(money)
 
         assertEquals(expected, actual)
     }
 
     @Test
     fun `Test formatCurrency() with amount below -1000`() {
-        val money = BigDecimal.valueOf(-1200).asMoney()
+        val money = Money(BigDecimal.valueOf(-1200), Currency.DOLLAR)
 
         val expected = "-1,200.00 $SYMBOL_DOLLAR"
-        val actual = formatCurrency(money, SYMBOL_DOLLAR)
+        val actual = formatCurrency(money)
 
         assertEquals(expected, actual)
     }
 
     @Test
     fun `Test formatCurrency() with amount equals to 0`() {
-        val money = BigDecimal.ZERO.asMoney()
+        val money = Money(BigDecimal.ZERO, Currency.DOLLAR)
 
         val expected = "0.00 $SYMBOL_DOLLAR"
-        val actual = formatCurrency(money, SYMBOL_DOLLAR)
+        val actual = formatCurrency(money)
 
         assertEquals(expected, actual)
     }
 
     @Test
     fun `Test formatCurrency() with decimal amount`() {
-        val money = BigDecimal.valueOf(12.34).asMoney()
+        val money = Money(BigDecimal.valueOf(12.34), Currency.DOLLAR)
 
         val expected = "12.34 $SYMBOL_DOLLAR"
-        val actual = formatCurrency(money, SYMBOL_DOLLAR)
+        val actual = formatCurrency(money)
 
         assertEquals(expected, actual)
     }
