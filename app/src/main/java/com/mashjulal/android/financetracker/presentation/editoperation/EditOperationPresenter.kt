@@ -9,8 +9,8 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class EditOperationPresenter @Inject constructor(
-        var accountInteractor: RequestAccountInteractor,
-        var operationInteractor: AddOperationInteractor
+        private val accountInteractor: RequestAccountInteractor,
+        private val operationInteractor: AddOperationInteractor
 ) {
 
     private var view: View? = null

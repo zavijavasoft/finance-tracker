@@ -85,7 +85,7 @@ class MainFragment : Fragment(), MainPresenter.View {
     override fun onResume() {
         super.onResume()
         presenter.attachView(this)
-        if (::spinnerAccounts.isInitialized) {
+        if (::spinnerAccounts.isInitialized && spinnerAccounts.childCount > 0) {
             refreshDataCards(spinnerAccounts.selectedItem as String)
         } else {
             refreshDataCards()

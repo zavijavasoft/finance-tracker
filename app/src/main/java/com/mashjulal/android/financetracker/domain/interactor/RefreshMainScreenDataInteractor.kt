@@ -54,28 +54,35 @@ class RefreshMainScreenDataInteractorImpl @Inject constructor(
         val balancesGroupedByCurrency = balances
                 .groupBy { it.amount.currency }
                 .filter { it.key in listOf(Currency.RUBLE, Currency.DOLLAR) }
-        val balanceInRubles = calculateBalance(balancesGroupedByCurrency[Currency.RUBLE]
-                ?: listOf())
-        val operationTotalInRubles = calculateTotal(operations.filter { it.amount.currency == Currency.RUBLE })
-
-        val balanceInDollars = calculateBalance(balancesGroupedByCurrency[Currency.DOLLAR]
-                ?: listOf())
-        val operationTotalInDollars = calculateTotal(operations.filter { it.amount.currency == Currency.DOLLAR })
-
+        val balanceInRubles = calculateBalance(
+                balancesGroupedByCurrency[Currency.RUBLE]
+                        ?: listOf(), Currency.RUBLE)
+        val operationTotalInRubles = calculateTotal(
+                operations.filter { it.amount.currency == Currency.RUBLE },
+                Currency.RUBLE)
         val totalRubles = balanceInRubles + operationTotalInRubles
+
+        val balanceInDollars = calculateBalance(
+                balancesGroupedByCurrency[Currency.DOLLAR] ?: listOf(),
+                Currency.DOLLAR)
+        val operationTotalInDollars = calculateTotal(operations.filter {
+            it.amount.currency == Currency.DOLLAR
+        },
+                Currency.DOLLAR)
         val totalDollars = balanceInDollars + operationTotalInDollars
+
         return BalanceViewModel(totalRubles, totalDollars)
     }
 
     private fun createIncomingsModel(operations: List<Operation>): IncomingsPreviewViewModel {
-        val balance = calculateTotal(operations)
+        val balance = calculateTotal(operations, operations[0].amount.currency)
         return IncomingsPreviewViewModel(balance,
                 operations.subList(0, min(MAX_ITEM_IN_LIST_COUNT, operations.size)),
                 operations.size > MAX_ITEM_IN_LIST_COUNT)
     }
 
     private fun createOutgoingsModel(operations: List<Operation>): OutgoingsPreviewViewModel {
-        val balance = calculateTotal(operations)
+        val balance = calculateTotal(operations, operations[0].amount.currency)
         return OutgoingsPreviewViewModel(balance,
                 operations.subList(0, min(MAX_ITEM_IN_LIST_COUNT, operations.size)),
                 operations.size > MAX_ITEM_IN_LIST_COUNT)

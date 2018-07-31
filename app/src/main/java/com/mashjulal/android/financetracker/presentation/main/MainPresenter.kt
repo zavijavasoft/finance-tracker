@@ -9,8 +9,8 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MainPresenter @Inject constructor(
-        var refreshInteractor: RefreshMainScreenDataInteractor,
-        var accountInteractor: RequestAccountInteractor
+        private val refreshInteractor: RefreshMainScreenDataInteractor,
+        private val accountInteractor: RequestAccountInteractor
 ) {
 
     private var view: View? = null

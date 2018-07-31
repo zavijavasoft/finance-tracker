@@ -7,9 +7,9 @@ import java.math.BigDecimal
  * @param operations list of operations
  * @return result of operations
  */
-fun calculateTotal(operations: List<Operation>): Money {
+fun calculateTotal(operations: List<Operation>, defaultCurrency: Currency): Money {
     if (operations.isEmpty())
-        return Money(BigDecimal.ZERO, Currency.RUBLE)
+        return Money(BigDecimal.ZERO, defaultCurrency)
     return operations
             .map { if (it is OutgoingsOperation) -it.amount else it.amount }
             .reduce { acc, money -> acc + money }
@@ -19,9 +19,9 @@ fun calculateTotal(operations: List<Operation>): Money {
  * @param balances list of balances
  * @return total sum of balances
  */
-fun calculateBalance(balances: List<Balance>): Money {
+fun calculateBalance(balances: List<Balance>, defaultCurrency: Currency): Money {
     if (balances.isEmpty())
-        return Money(BigDecimal.ZERO, Currency.RUBLE)
+        return Money(BigDecimal.ZERO, defaultCurrency)
     return balances
             .map { it.amount }
             .reduce { acc, money -> acc + money }
