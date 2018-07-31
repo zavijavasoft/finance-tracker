@@ -32,4 +32,6 @@
     <string name="title_activity_edit_operation">Операция…</string>
     <string name="accounts">Аккаунты</string>
     <string name="all_accounts">Все</string>
+    <string name="account">Счет</string>
+    <string name="error_operation_cant_be_added_to_all">Невозможно добавить операцию для общего счета. Пожайлуста, выберите другой счет.</string>
 </resources>

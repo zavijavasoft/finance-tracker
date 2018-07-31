@@ -1,13 +1,16 @@
 package com.mashjulal.android.financetracker.presentation.editoperation
 
+import com.mashjulal.android.financetracker.domain.financialcalculations.Account
 import com.mashjulal.android.financetracker.domain.financialcalculations.Operation
 import com.mashjulal.android.financetracker.domain.interactor.AddOperationInteractor
+import com.mashjulal.android.financetracker.domain.interactor.RequestAccountInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class EditOperationPresenter @Inject constructor(
-        var interactor: AddOperationInteractor
+        var accountInteractor: RequestAccountInteractor,
+        var operationInteractor: AddOperationInteractor
 ) {
 
     private var view: View? = null
@@ -21,7 +24,7 @@ class EditOperationPresenter @Inject constructor(
     }
 
     fun saveOperation(operation: Operation) {
-        interactor.execute(operation)
+        operationInteractor.execute(operation)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -29,7 +32,17 @@ class EditOperationPresenter @Inject constructor(
                 }
     }
 
+    fun getAccountList() {
+        accountInteractor.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { data ->
+                    view?.setAccounts(data)
+                }
+    }
+
     interface View {
+        fun setAccounts(data: List<Account>)
         fun closeEditWindow()
     }
 }

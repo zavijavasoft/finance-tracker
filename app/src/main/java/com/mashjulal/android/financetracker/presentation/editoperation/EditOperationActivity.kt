@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
 import com.mashjulal.android.financetracker.App
 import com.mashjulal.android.financetracker.R
@@ -20,6 +21,7 @@ import java.util.*
 import javax.inject.Inject
 
 private const val ARG_OPERATION_TYPE = "type"
+private const val ARG_OPERATION_ACCOUNT = "account"
 
 private const val MAX_AMOUNT_DIGIT_COUNT = 12
 
@@ -28,20 +30,16 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
     @Inject
     lateinit var presenter: EditOperationPresenter
     private val calendar: Calendar = Calendar.getInstance()
+    private lateinit var accountName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_operation)
 
         App.appComponent.inject(this)
-        parseArgs()
         initLayout()
+        parseArgs()
         setResult(Activity.RESULT_CANCELED)
-    }
-
-    private fun parseArgs() {
-        val type = intent.getStringExtra(ARG_OPERATION_TYPE)
-        spinnerOperationType.setSelection(if (type == "incomings") 0 else 1)
     }
 
     private fun initLayout() {
@@ -86,6 +84,7 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
             showDateDialog()
         }
         showSelectedDate()
+        initAccountSpinner()
     }
 
     private fun showDateDialog() {
@@ -103,6 +102,17 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
 
     private fun showSelectedDate() {
         btnSelectDate.text = SimpleDateFormat.getDateInstance().format(calendar.time)
+    }
+
+    private fun initAccountSpinner() {
+        presenter.getAccountList()
+    }
+
+    private fun parseArgs() {
+        val type = intent.getStringExtra(ARG_OPERATION_TYPE)
+        spinnerOperationType.setSelection(if (type == OperationType.INCOMINGS.name) 0 else 1)
+
+        accountName = intent.getStringExtra(ARG_OPERATION_ACCOUNT)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -123,22 +133,26 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
         val amount = BigDecimal(etAmount.text.toString())
         val currency = if (spinnerCurrency.selectedItem.toString() == "$") Currency.DOLLAR else Currency.RUBLE
         val date = calendar.time
-        val operationType = spinnerOperationType.selectedItem.toString()
-        val category = Category(spinnerCategory.selectedItem.toString(), R.drawable.ic_github)
-
-        val operation: Operation = when (operationType) {
-            getString(R.string.incomings) ->
-                IncomingsOperation(Money(amount, currency), category, date, Account("John Smith"))
-            getString(R.string.outgoings) ->
-                OutgoingsOperation(Money(amount, currency), category, date, Account("John Smith"))
-            else -> throw Exception("Wrong operation type $operationType")
-        }
+        val operationType = spinnerOperationType.selectedItem as String
+        val category = Category(spinnerCategory.selectedItem as String, R.drawable.ic_github)
+        val account = Account(spinnerAccount.selectedItem as String)
+        val operation: Operation = if (operationType == getString(R.string.incomings))
+            IncomingsOperation(Money(amount, currency), category, date, account)
+        else OutgoingsOperation(Money(amount, currency), category, date, account)
         presenter.saveOperation(operation)
     }
 
     override fun closeEditWindow() {
         setResult(Activity.RESULT_OK)
         finish()
+    }
+
+    override fun setAccounts(data: List<Account>) {
+        val adapter = ArrayAdapter(this,
+                android.R.layout.simple_spinner_dropdown_item, data.map { it.title })
+        spinnerAccount.adapter = adapter
+        val position = adapter.getPosition(accountName)
+        spinnerAccount.setSelection(position)
     }
 
     override fun onResume() {
@@ -153,9 +167,10 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
 
     companion object {
 
-        fun newIntent(context: Context, type: String) =
+        fun newIntent(context: Context, type: OperationType, account: String) =
                 with(Intent(context, EditOperationActivity::class.java)) {
-                    putExtra(ARG_OPERATION_TYPE, type)
+                    putExtra(ARG_OPERATION_TYPE, type.name)
+                    putExtra(ARG_OPERATION_ACCOUNT, account)
                 }!!
     }
 }

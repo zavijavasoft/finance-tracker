@@ -12,6 +12,7 @@ import com.example.delegateadapter.delegate.diff.IComparableItem
 import com.mashjulal.android.financetracker.App
 import com.mashjulal.android.financetracker.R
 import com.mashjulal.android.financetracker.domain.financialcalculations.Account
+import com.mashjulal.android.financetracker.domain.financialcalculations.OperationType
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.balance.BalanceDelegateAdapter
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.IncomingsPreviewDelegateAdapter
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.OutgoingsPreviewDelegateAdapter
@@ -84,7 +85,11 @@ class MainFragment : Fragment(), MainPresenter.View {
     override fun onResume() {
         super.onResume()
         presenter.attachView(this)
-        refreshDataCards()
+        if (::spinnerAccounts.isInitialized) {
+            refreshDataCards(spinnerAccounts.selectedItem as String)
+        } else {
+            refreshDataCards()
+        }
     }
 
     override fun onPause() {
@@ -106,11 +111,24 @@ class MainFragment : Fragment(), MainPresenter.View {
         val adapter = DiffUtilCompositeAdapter.Builder()
                 .add(BalanceDelegateAdapter())
                 .add(IncomingsPreviewDelegateAdapter(getString(R.string.incomings),
-                        View.OnClickListener { listener!!.onAddIncomingsClicked() }))
+                        View.OnClickListener {
+                            callAddOperation(OperationType.INCOMINGS)
+                        }))
                 .add(OutgoingsPreviewDelegateAdapter(getString(R.string.outgoings),
-                        View.OnClickListener { listener!!.onAddOutgoingsClicked() }))
+                        View.OnClickListener {
+                            callAddOperation(OperationType.OUTGOINGS)
+                        }))
                 .build()
         rvMenu.adapter = adapter
+    }
+
+    private fun callAddOperation(operationType: OperationType) {
+        if (spinnerAccounts.selectedItemPosition == 0) {
+            listener?.onErrorOccurred(getString(R.string.error_operation_cant_be_added_to_all))
+            return
+        }
+        val accountName = spinnerAccounts.selectedItem as String
+        listener?.onAddOperationClicked(operationType, accountName)
     }
 
     override fun refreshData(data: List<IComparableItem>) {
@@ -123,6 +141,7 @@ class MainFragment : Fragment(), MainPresenter.View {
         val adapter = ArrayAdapter<String>(context,
                 android.R.layout.simple_spinner_dropdown_item, entries)
         spinnerAccounts.adapter = adapter
+        spinnerAccounts.setSelection(0)
     }
 
     companion object {
@@ -136,7 +155,7 @@ class MainFragment : Fragment(), MainPresenter.View {
     }
 
     interface OnFragmentInteractionListener {
-        fun onAddIncomingsClicked()
-        fun onAddOutgoingsClicked()
+        fun onAddOperationClicked(operationType: OperationType, accountName: String)
+        fun onErrorOccurred(message: String)
     }
 }
