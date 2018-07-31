@@ -48,19 +48,19 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
     private fun initLayout() {
         numberKeyboard.setListener(object : NumberKeyboardListener {
             override fun onNumberClicked(p0: Int) {
-                val amountRepr = etAmount.text.toString()
+                val amount = etAmount.text.toString()
 
-                if (amountRepr == "0") {
+                if (amount == "0") {
                     if (p0 != 0) {
                         etAmount.setText(p0.toString())
                     }
                     return
                 }
 
-                val doteIndex = amountRepr.indexOf(".")
+                val doteIndex = amount.indexOf(".")
                 val noDot = doteIndex == -1
-                val lessThanThreeDigitsAfterDot = doteIndex > amountRepr.length - 3
-                val amountBelowLimit = amountRepr.length < MAX_AMOUNT_DIGIT_COUNT
+                val lessThanThreeDigitsAfterDot = doteIndex > amount.length - 3
+                val amountBelowLimit = amount.length < MAX_AMOUNT_DIGIT_COUNT
 
                 if ((noDot || lessThanThreeDigitsAfterDot) && amountBelowLimit) {
                     etAmount.text.append(p0.toString())

@@ -13,11 +13,14 @@ import java.util.*
  */
 sealed class Operation(
         open val operationType: OperationType,
-        open val amount: Money,
+        _amount: Money,
         open val category: Category,
         open val date: Date,
         open val account: Account
-)
+) {
+
+    open val amount = _amount.abs()
+}
 
 data class IncomingsOperation(
         override val amount: Money,
@@ -49,4 +52,4 @@ enum class OperationType {
     INCOMINGS, OUTGOINGS
 }
 
-fun BigDecimal.asMoney() = setScale(2, RoundingMode.HALF_EVEN)!!
+fun BigDecimal.asMoney(): BigDecimal = setScale(2, RoundingMode.HALF_EVEN)

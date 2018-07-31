@@ -16,20 +16,19 @@ private const val BASE_URL = "https://free.currencyconverterapi.com/"
  */
 class RetrofitHelper {
 
-    val service: CurrencyService
-        get() {
-            val gson = GsonBuilder()
-                    .registerTypeAdapter(CurrencyRateModel::class.java, CurrencyRateJsonDeserializer())
-                    .setLenient()
-                    .create()
+    val service: CurrencyService by lazy {
+        val gson = GsonBuilder()
+                .registerTypeAdapter(CurrencyRateModel::class.java, CurrencyRateJsonDeserializer())
+                .setLenient()
+                .create()
 
-            val retrofit = Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .build()
-            return retrofit.create(CurrencyService::class.java)
-        }
+        val retrofit = Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build()
+        retrofit.create(CurrencyService::class.java)
+    }
 }
 
 class CurrencyRateJsonDeserializer : JsonDeserializer<CurrencyRateModel> {

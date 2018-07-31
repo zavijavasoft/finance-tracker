@@ -33,7 +33,7 @@ import kotlinx.android.synthetic.main.fragment_main.*
  */
 class MainFragment : Fragment(), MainPresenter.View {
 
-    private var presenter: MainPresenter? = null
+    private lateinit var presenter: MainPresenter
     private var listener: OnFragmentInteractionListener? = null
     private lateinit var spinnerAccounts: Spinner
 
@@ -45,7 +45,7 @@ class MainFragment : Fragment(), MainPresenter.View {
                         BalanceRepositoryImpl(),
                         OperationRepositoryImpl(), CurrencyRepositoryImpl(RetrofitHelper())),
                 RequestAccountInteractorImpl(AccountRepositoryImpl()))
-        presenter?.attachView(this)
+        presenter.attachView(this)
 
         setHasOptionsMenu(true)
     }
@@ -64,13 +64,13 @@ class MainFragment : Fragment(), MainPresenter.View {
                                         position: Int, id: Long) {
                 val accountTitle = spinnerAccounts.adapter.getItem(position) as String
                 if (accountTitle == getString(R.string.all_accounts)) {
-                    presenter?.refreshData()
+                    presenter.refreshData()
                 } else {
-                    presenter?.refreshData(accountTitle)
+                    presenter.refreshData(accountTitle)
                 }
             }
         }
-        presenter?.getAccountList()
+        presenter.getAccountList()
     }
 
     override fun onAttach(context: Context) {
@@ -84,12 +84,12 @@ class MainFragment : Fragment(), MainPresenter.View {
 
     override fun onResume() {
         super.onResume()
-        presenter?.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onPause() {
         super.onPause()
-        presenter?.detachView()
+        presenter.detachView()
     }
 
     override fun onDetach() {
