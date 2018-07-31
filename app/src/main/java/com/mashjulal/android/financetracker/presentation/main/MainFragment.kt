@@ -48,21 +48,28 @@ class MainFragment : Fragment(), MainPresenter.View {
 
         val item = menu.findItem(R.id.menuSpinnerAccounts)
         spinnerAccounts = item.actionView as Spinner
+        spinnerAccounts.adapter = ArrayAdapter<String>(context,
+                android.R.layout.simple_spinner_dropdown_item, mutableListOf())
         spinnerAccounts.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             override fun onNothingSelected(parentView: AdapterView<*>?) {}
 
             override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?,
                                         position: Int, id: Long) {
-                val accountTitle = spinnerAccounts.adapter.getItem(position) as String
-                if (accountTitle == getString(R.string.all_accounts)) {
-                    presenter.refreshData()
-                } else {
-                    presenter.refreshData(accountTitle)
-                }
+                val accountTitle = if (position > 0) spinnerAccounts.adapter.getItem(position) as String
+                else ""
+                refreshDataCards(accountTitle)
             }
         }
         presenter.getAccountList()
+    }
+
+    private fun refreshDataCards(accountName: String = "") {
+        if (accountName.isEmpty()) {
+            presenter.refreshData()
+        } else {
+            presenter.refreshData(accountName)
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -77,6 +84,7 @@ class MainFragment : Fragment(), MainPresenter.View {
     override fun onResume() {
         super.onResume()
         presenter.attachView(this)
+        refreshDataCards()
     }
 
     override fun onPause() {
@@ -95,17 +103,12 @@ class MainFragment : Fragment(), MainPresenter.View {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val newIncomingOperationClick = View.OnClickListener {
-            listener!!.onAddIncomingsClicked()
-        }
-        val newOutgoingOperationClick = View.OnClickListener {
-            listener!!.onAddOutgoingsClicked()
-        }
-
         val adapter = DiffUtilCompositeAdapter.Builder()
                 .add(BalanceDelegateAdapter())
-                .add(IncomingsPreviewDelegateAdapter(getString(R.string.incomings), newIncomingOperationClick))
-                .add(OutgoingsPreviewDelegateAdapter(getString(R.string.outgoings), newOutgoingOperationClick))
+                .add(IncomingsPreviewDelegateAdapter(getString(R.string.incomings),
+                        View.OnClickListener { listener!!.onAddIncomingsClicked() }))
+                .add(OutgoingsPreviewDelegateAdapter(getString(R.string.outgoings),
+                        View.OnClickListener { listener!!.onAddOutgoingsClicked() }))
                 .build()
         rvMenu.adapter = adapter
     }
