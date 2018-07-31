@@ -9,7 +9,6 @@ import com.mashjulal.android.financetracker.presentation.main.recyclerview.balan
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.IncomingsPreviewViewModel
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.OutgoingsPreviewViewModel
 import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
 import java.lang.Math.min
 import java.math.BigDecimal
 
@@ -31,30 +30,30 @@ class RefreshMainScreenDataInteractorImpl(
 ) : RefreshMainScreenDataInteractor {
 
     override fun execute(): Observable<List<IComparableItem>> =
-            Observable.create {
+            Observable.fromCallable {
                 val rate = currencyRepository.getRate(FROM, TO)
                 val balances = balanceRepository.getLastByAll()
                 val operations = operationRepository.getAfter(balances[0].date)
-                execute(rate, balances, operations, it)
+                createModelsFrom(rate, balances, operations)
             }
 
     override fun execute(account: Account): Observable<List<IComparableItem>> =
-            Observable.create {
+            Observable.fromCallable {
                 val rate = currencyRepository.getRate(FROM, TO)
                 val balances = listOf(balanceRepository.getLastByAccount(account))
                 val operations = operationRepository.getByAccountAfter(account, balances[0].date)
-                execute(rate, balances, operations, it)
-    }
+                createModelsFrom(rate, balances, operations)
+            }
 
-    private fun execute(rate: BigDecimal, balances: List<Balance>, operations: List<Operation>,
-                        observableEmitter: ObservableEmitter<List<IComparableItem>>) {
+    private fun createModelsFrom(rate: BigDecimal, balances: List<Balance>, operations: List<Operation>)
+            : List<IComparableItem> {
         val balanceViewModel = createBalanceModel(balances, operations, rate)
 
         val (incomings, outgoings) = operations
                 .partition { it.operationType == OperationType.INCOMINGS }
         val incomingsViewModel = createIncomingsModel(incomings, rate)
         val outgoingsViewModel = createOutgoingsModel(outgoings, rate)
-        observableEmitter.onNext(listOf(balanceViewModel, incomingsViewModel, outgoingsViewModel))
+        return listOf(balanceViewModel, incomingsViewModel, outgoingsViewModel)
     }
 
     private fun createBalanceModel(balances: List<Balance>,

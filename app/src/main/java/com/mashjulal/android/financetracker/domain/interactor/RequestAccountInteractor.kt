@@ -12,8 +12,7 @@ class RequestAccountInteractorImpl(
         private val accountRepository: AccountRepository
 ) : RequestAccountInteractor {
 
-    override fun execute(): Observable<List<Account>> = Observable.create {
-        it.onNext(accountRepository.getAll())
+    override fun execute(): Observable<List<Account>> = Observable.fromCallable {
+        accountRepository.getAll()
     }
-
 }

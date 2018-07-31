@@ -9,6 +9,6 @@ class CurrencyRepositoryImpl(
 ) : CurrencyRepository {
     override fun getRate(from: String, to: String): BigDecimal {
         val q = "${from}_$to"
-        return retrofitHelper.service.getRate(q).blockingFirst().rate
+        return retrofitHelper.service.getRate(q).blockingGet().rate
     }
 }
