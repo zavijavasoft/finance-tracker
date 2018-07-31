@@ -4,9 +4,10 @@ import com.mashjulal.android.financetracker.domain.financialcalculations.Operati
 import com.mashjulal.android.financetracker.domain.interactor.AddOperationInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class EditOperationPresenter(
-        private val interactor: AddOperationInteractor
+class EditOperationPresenter @Inject constructor(
+        var interactor: AddOperationInteractor
 ) {
 
     private var view: View? = null

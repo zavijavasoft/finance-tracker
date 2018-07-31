@@ -9,15 +9,15 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
+import com.mashjulal.android.financetracker.App
 import com.mashjulal.android.financetracker.R
-import com.mashjulal.android.financetracker.data.OperationRepositoryImpl
 import com.mashjulal.android.financetracker.domain.financialcalculations.*
 import com.mashjulal.android.financetracker.domain.financialcalculations.Currency
-import com.mashjulal.android.financetracker.domain.interactor.AddOperationInteractorImpl
 import kotlinx.android.synthetic.main.activity_edit_operation.*
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 private const val ARG_OPERATION_TYPE = "type"
 
@@ -25,16 +25,15 @@ private const val MAX_AMOUNT_DIGIT_COUNT = 12
 
 class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
 
-    private lateinit var presenter: EditOperationPresenter
+    @Inject
+    lateinit var presenter: EditOperationPresenter
     private val calendar: Calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_operation)
 
-        // TODO: di
-        presenter = EditOperationPresenter(AddOperationInteractorImpl(OperationRepositoryImpl()))
-
+        App.appComponent.inject(this)
         parseArgs()
         initLayout()
         setResult(Activity.RESULT_CANCELED)

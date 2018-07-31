@@ -1,14 +1,15 @@
 package com.mashjulal.android.financetracker.data
 
-import com.mashjulal.android.financetracker.data.currencyconvertapi.RetrofitHelper
+import com.mashjulal.android.financetracker.data.currencyconvertapi.CurrencyService
 import com.mashjulal.android.financetracker.domain.repository.CurrencyRepository
 import java.math.BigDecimal
+import javax.inject.Inject
 
-class CurrencyRepositoryImpl(
-        private val retrofitHelper: RetrofitHelper
+class CurrencyRepositoryImpl @Inject constructor(
+        private val currencyService: CurrencyService
 ) : CurrencyRepository {
     override fun getRate(from: String, to: String): BigDecimal {
         val q = "${from}_$to"
-        return retrofitHelper.service.getRate(q).blockingGet().rate
+        return currencyService.getRate(q).blockingGet().rate
     }
 }

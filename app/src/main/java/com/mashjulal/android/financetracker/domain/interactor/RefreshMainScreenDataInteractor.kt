@@ -11,6 +11,7 @@ import com.mashjulal.android.financetracker.presentation.main.recyclerview.opera
 import io.reactivex.Observable
 import java.lang.Math.min
 import java.math.BigDecimal
+import javax.inject.Inject
 
 interface RefreshMainScreenDataInteractor {
     fun execute(): Observable<List<IComparableItem>>
@@ -23,7 +24,7 @@ private const val TO = "RUB"
 
 private const val MAX_ITEM_IN_LIST_COUNT = 5
 
-class RefreshMainScreenDataInteractorImpl(
+class RefreshMainScreenDataInteractorImpl @Inject constructor(
         private val balanceRepository: BalanceRepository,
         private val operationRepository: OperationRepository,
         private val currencyRepository: CurrencyRepository

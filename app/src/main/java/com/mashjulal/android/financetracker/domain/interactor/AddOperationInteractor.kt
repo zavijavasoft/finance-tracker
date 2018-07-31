@@ -10,7 +10,7 @@ interface AddOperationInteractor {
 }
 
 class AddOperationInteractorImpl(
-        private val operationRepository: OperationRepository
+        private var operationRepository: OperationRepository
 ) : AddOperationInteractor {
 
     override fun execute(operation: Operation): Completable =

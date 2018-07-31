@@ -9,19 +9,14 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import com.example.delegateadapter.delegate.diff.DiffUtilCompositeAdapter
 import com.example.delegateadapter.delegate.diff.IComparableItem
+import com.mashjulal.android.financetracker.App
 import com.mashjulal.android.financetracker.R
-import com.mashjulal.android.financetracker.data.AccountRepositoryImpl
-import com.mashjulal.android.financetracker.data.BalanceRepositoryImpl
-import com.mashjulal.android.financetracker.data.CurrencyRepositoryImpl
-import com.mashjulal.android.financetracker.data.OperationRepositoryImpl
-import com.mashjulal.android.financetracker.data.currencyconvertapi.RetrofitHelper
 import com.mashjulal.android.financetracker.domain.financialcalculations.Account
-import com.mashjulal.android.financetracker.domain.interactor.RefreshMainScreenDataInteractorImpl
-import com.mashjulal.android.financetracker.domain.interactor.RequestAccountInteractorImpl
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.balance.BalanceDelegateAdapter
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.IncomingsPreviewDelegateAdapter
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.OutgoingsPreviewDelegateAdapter
 import kotlinx.android.synthetic.main.fragment_main.*
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass for main page.
@@ -33,18 +28,15 @@ import kotlinx.android.synthetic.main.fragment_main.*
  */
 class MainFragment : Fragment(), MainPresenter.View {
 
-    private lateinit var presenter: MainPresenter
+    @Inject
+    lateinit var presenter: MainPresenter
     private var listener: OnFragmentInteractionListener? = null
     private lateinit var spinnerAccounts: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        presenter = MainPresenter(
-                RefreshMainScreenDataInteractorImpl(
-                        BalanceRepositoryImpl(),
-                        OperationRepositoryImpl(), CurrencyRepositoryImpl(RetrofitHelper())),
-                RequestAccountInteractorImpl(AccountRepositoryImpl()))
+        App.appComponent.inject(this)
         presenter.attachView(this)
 
         setHasOptionsMenu(true)
