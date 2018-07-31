@@ -1,4 +1,4 @@
-package com.mashjulal.android.financetracker.data
+package com.mashjulal.android.financetracker.stub.repository
 
 import com.mashjulal.android.financetracker.R
 import com.mashjulal.android.financetracker.domain.financialcalculations.*
@@ -13,7 +13,7 @@ private val category = Category("Salary", R.drawable.ic_github)
 private val tomorrow = Date(calendar.timeInMillis + 1000 * 60 * 60 * 24)
 private val tomorrow2Days = Date(tomorrow.time + 1000 * 60 * 60 * 24)
 
-class OperationRepositoryImpl : OperationRepository {
+class OperationRepositoryStub : OperationRepository {
 
     private var data: HashMap<Long, Operation> = hashMapOf(
             1L to IncomingsOperation(Money(BigDecimal.valueOf(10),

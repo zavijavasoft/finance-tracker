@@ -46,12 +46,12 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
 
     private fun initLayout() {
         numberKeyboard.setListener(object : NumberKeyboardListener {
-            override fun onNumberClicked(p0: Int) {
+            override fun onNumberClicked(number: Int) {
                 val amount = etAmount.text.toString()
 
                 if (amount == "0") {
-                    if (p0 != 0) {
-                        etAmount.setText(p0.toString())
+                    if (number != 0) {
+                        etAmount.setText(number.toString())
                     }
                     return
                 }
@@ -62,7 +62,7 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
                 val amountBelowLimit = amount.length < MAX_AMOUNT_DIGIT_COUNT
 
                 if ((noDot || lessThanThreeDigitsAfterDot) && amountBelowLimit) {
-                    etAmount.text.append(p0.toString())
+                    etAmount.text.append(number.toString())
                 }
             }
 
