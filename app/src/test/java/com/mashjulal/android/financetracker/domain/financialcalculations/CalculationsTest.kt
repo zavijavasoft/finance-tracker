@@ -78,20 +78,6 @@ class CalculationsTest {
     }
 
     @Test
-    fun `Test calculateTotal with different currencies`() {
-        val operations: MutableList<Operation> = mutableListOf(
-                initOutgoings(BigDecimal.valueOf(10), Currency.RUBLE),
-                initOutgoings(BigDecimal.valueOf(15), Currency.DOLLAR),
-                initOutgoings(BigDecimal.valueOf(20), Currency.RUBLE)
-        )
-
-        val expected = Money(BigDecimal.valueOf(-973.87), Currency.RUBLE)
-        val actual = calculateTotal(operations, BigDecimal(62.924896))
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
     fun `Test calculateTotal with empty list`() {
         val operations: MutableList<Operation> = mutableListOf()
 

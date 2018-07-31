@@ -40,9 +40,9 @@ data class OutgoingsOperation(
  * Enumeration class of currencies.
  * Each enum provides with it's locale.
  */
-enum class Currency(val symbol: String) {
-    RUBLE("\u20BD"),
-    DOLLAR("$")
+enum class Currency(val symbol: String, var rate: String) {
+    RUBLE("\u20BD", "RUB"),
+    DOLLAR("$", "USD")
 }
 
 /**
