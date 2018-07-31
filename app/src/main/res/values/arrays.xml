@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="currency_entries" translatable="false">
+        <item>$</item>
+        <item>₽</item>
+    </string-array>
+
+    <string-array name="category_entries">
+        <item>Salary</item>
+        <item>Bills</item>
+        <item>Entertainment</item>
+    </string-array>
+
+    <string-array name="operation_type_entries">
+        <item>Incomings</item>
+        <item>Outgoings</item>
+    </string-array>
+
+</resources>

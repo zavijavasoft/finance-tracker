@@ -19,4 +19,17 @@
     <string name="pref_title_vibrate">Вибрация</string>
     <string name="nav_menu_about">О приложении</string>
     <string name="title_activity_about">О приложении</string>
+    <string name="category_icon_image">Иконка категории</string>
+    <string name="create_new_operation">Создать новую операцию</string>
+    <string name="show_more">Ещё</string>
+    <string name="done">Завершить</string>
+    <string name="currency">Валюта</string>
+    <string name="type">Тип операциии</string>
+    <string name="category">Категория</string>
+    <string name="date">Дата</string>
+    <string name="incomings">Доходы</string>
+    <string name="outgoings">Расходы</string>
+    <string name="title_activity_edit_operation">Операция…</string>
+    <string name="accounts">Аккаунты</string>
+    <string name="all_accounts">Все</string>
 </resources>
