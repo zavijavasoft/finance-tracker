@@ -3,6 +3,7 @@ package com.mashjulal.android.financetracker.presentation.main
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -39,8 +40,11 @@ class MainFragment : Fragment(), MainPresenter.View {
 
         App.appComponent.inject(this)
         presenter.attachView(this)
+    }
 
+    private fun setActionBar() {
         setHasOptionsMenu(true)
+        (activity as AppCompatActivity).supportActionBar?.title = ""
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -50,7 +54,7 @@ class MainFragment : Fragment(), MainPresenter.View {
         val item = menu.findItem(R.id.menuSpinnerAccounts)
         spinnerAccounts = item.actionView as Spinner
         spinnerAccounts.adapter = ArrayAdapter<String>(context,
-                android.R.layout.simple_spinner_dropdown_item, mutableListOf())
+                R.layout.item_spinner_toolbar, mutableListOf())
         spinnerAccounts.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             override fun onNothingSelected(parentView: AdapterView<*>?) {}
@@ -62,6 +66,10 @@ class MainFragment : Fragment(), MainPresenter.View {
                 refreshDataCards(accountTitle)
             }
         }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        super.onPrepareOptionsMenu(menu)
         presenter.getAccountList()
     }
 
@@ -82,14 +90,15 @@ class MainFragment : Fragment(), MainPresenter.View {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        activity?.invalidateOptionsMenu()
+    }
+
     override fun onResume() {
         super.onResume()
         presenter.attachView(this)
-        if (::spinnerAccounts.isInitialized && spinnerAccounts.childCount > 0) {
-            refreshDataCards(spinnerAccounts.selectedItem as String)
-        } else {
-            refreshDataCards()
-        }
+        refreshDataCards()
     }
 
     override fun onPause() {
@@ -108,6 +117,8 @@ class MainFragment : Fragment(), MainPresenter.View {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setActionBar()
+
         val adapter = DiffUtilCompositeAdapter.Builder()
                 .add(BalanceDelegateAdapter())
                 .add(IncomingsPreviewDelegateAdapter(getString(R.string.incomings),
@@ -139,8 +150,9 @@ class MainFragment : Fragment(), MainPresenter.View {
     override fun setAccounts(data: List<Account>) {
         val entries = listOf(getString(R.string.all_accounts)) + data.map { it.title }
         val adapter = ArrayAdapter<String>(context,
-                android.R.layout.simple_spinner_dropdown_item, entries)
+                R.layout.item_spinner_toolbar, entries)
         spinnerAccounts.adapter = adapter
+        spinnerAccounts.gravity = Gravity.END
         spinnerAccounts.setSelection(0)
     }
 
