@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
 import com.mashjulal.android.financetracker.App
@@ -31,6 +33,9 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
     lateinit var presenter: EditOperationPresenter
     private val calendar: Calendar = Calendar.getInstance()
     private lateinit var accountName: String
+    private lateinit var operationType: String
+    private lateinit var categories: Map<OperationType, List<Category>>
+    private lateinit var accounts: List<Account>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +89,7 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
             showDateDialog()
         }
         showSelectedDate()
-        initAccountSpinner()
+        presenter.requestData()
     }
 
     private fun showDateDialog() {
@@ -104,13 +109,9 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
         btnSelectDate.text = SimpleDateFormat.getDateInstance().format(calendar.time)
     }
 
-    private fun initAccountSpinner() {
-        presenter.getAccountList()
-    }
-
     private fun parseArgs() {
-        val type = intent.getStringExtra(ARG_OPERATION_TYPE)
-        spinnerOperationType.setSelection(if (type == OperationType.INCOMINGS.name) 0 else 1)
+        operationType = intent.getStringExtra(ARG_OPERATION_TYPE)
+        spinnerOperationType.setSelection(if (operationType == OperationType.INCOMINGS.name) 0 else 1)
 
         accountName = intent.getStringExtra(ARG_OPERATION_ACCOUNT)
     }
@@ -130,29 +131,72 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
     }
 
     private fun finishEdit() {
-        val amount = BigDecimal(etAmount.text.toString())
-        val currency = if (spinnerCurrency.selectedItem.toString() == "$") Currency.DOLLAR else Currency.RUBLE
-        val date = calendar.time
-        val operationType = spinnerOperationType.selectedItem as String
-        val category = Category(spinnerCategory.selectedItem as String, R.drawable.ic_github)
-        val account = Account(spinnerAccount.selectedItem as String)
-        val operation: Operation = if (operationType == getString(R.string.incomings))
-            IncomingsOperation(Money(amount, currency), category, date, account)
-        else OutgoingsOperation(Money(amount, currency), category, date, account)
-        presenter.saveOperation(operation)
+        let {
+            val amount = BigDecimal(etAmount.text.toString())
+            val currency = if (spinnerCurrency.selectedItem.toString() == "$") Currency.DOLLAR else Currency.RUBLE
+            val date = calendar.time
+            val operationTypeRepr = spinnerOperationType.selectedItem as String
+            val operationType = if (operationTypeRepr == getString(R.string.incomings)) OperationType.INCOMINGS
+            else OperationType.OUTGOINGS
+            val account = Account(spinnerAccount.selectedItem as String)
+            val category = categories[operationType]
+                    ?.find { it.title == spinnerCategory.selectedItem as String }
+                    ?: throw Exception("Category can't be null")
+            val operation = when (operationType) {
+                OperationType.INCOMINGS -> IncomingsOperation(Money(amount, currency), category, date, account)
+                OperationType.OUTGOINGS -> OutgoingsOperation(Money(amount, currency), category, date, account)
+            }
+            presenter.saveOperation(operation)
+        }
+    }
+
+    override fun setData(accounts: List<Account>, categories: Map<OperationType, List<Category>>) {
+        setOperationTypes()
+        setAccounts(accounts)
+        setCategories(categories)
+    }
+
+    private fun setOperationTypes() {
+        spinnerOperationType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+
+            override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?,
+                                        position: Int, id: Long) {
+                val operation = spinnerOperationType.selectedItem
+                val operationType = if (operation == getString(R.string.incomings)) OperationType.INCOMINGS
+                else OperationType.OUTGOINGS
+
+                spinnerCategory.adapter = ArrayAdapter(this@EditOperationActivity,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        categories[operationType]?.map { it.title })
+                spinnerCategory.setSelection(0)
+            }
+
+        }
+    }
+
+    private fun setAccounts(data: List<Account>) {
+        this.accounts = data
+        val adapter = ArrayAdapter(this,
+                android.R.layout.simple_spinner_dropdown_item, accounts.map { it.title })
+        spinnerAccount.adapter = adapter
+        val position = adapter.getPosition(accountName)
+        spinnerAccount.setSelection(position)
+    }
+
+    private fun setCategories(categories: Map<OperationType, List<Category>>) {
+        this.categories = categories
+        val operation = OperationType.valueOf(operationType)
+        val adapter = ArrayAdapter(this,
+                android.R.layout.simple_spinner_dropdown_item, categories[operation].orEmpty()
+                .map { it.title })
+        spinnerCategory.adapter = adapter
+        spinnerCategory.setSelection(0)
     }
 
     override fun closeEditWindow() {
         setResult(Activity.RESULT_OK)
         finish()
-    }
-
-    override fun setAccounts(data: List<Account>) {
-        val adapter = ArrayAdapter(this,
-                android.R.layout.simple_spinner_dropdown_item, data.map { it.title })
-        spinnerAccount.adapter = adapter
-        val position = adapter.getPosition(accountName)
-        spinnerAccount.setSelection(position)
     }
 
     override fun onResume() {

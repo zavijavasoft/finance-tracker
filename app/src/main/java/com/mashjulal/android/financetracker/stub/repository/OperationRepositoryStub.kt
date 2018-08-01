@@ -9,7 +9,8 @@ import java.util.*
 
 private val account: Account = Account("John Smith")
 private val calendar = Calendar.getInstance()
-private val category = Category("Salary", R.drawable.ic_github)
+private val categoryIn = Category(OperationType.INCOMINGS, "Salary", R.drawable.ic_salary_green_24dp)
+private val categoryOut = Category(OperationType.OUTGOINGS, "Bills", R.drawable.ic_bills_red_24dp)
 private val tomorrow = Date(calendar.timeInMillis + 1000 * 60 * 60 * 24)
 private val tomorrow2Days = Date(tomorrow.time + 1000 * 60 * 60 * 24)
 
@@ -17,13 +18,13 @@ class OperationRepositoryStub : OperationRepository {
 
     private var data: HashMap<Long, Operation> = hashMapOf(
             1L to IncomingsOperation(Money(BigDecimal.valueOf(10),
-                    Currency.RUBLE), category, tomorrow, account),
+                    Currency.RUBLE), categoryIn, tomorrow, account),
             2L to OutgoingsOperation(Money(BigDecimal.valueOf(20),
-                    Currency.RUBLE), category, tomorrow2Days, account),
+                    Currency.RUBLE), categoryOut, tomorrow2Days, account),
             3L to OutgoingsOperation(Money(BigDecimal.valueOf(5),
-                    Currency.RUBLE), category, tomorrow2Days, account),
+                    Currency.RUBLE), categoryOut, tomorrow2Days, account),
             4L to IncomingsOperation(Money(BigDecimal.valueOf(35),
-                    Currency.RUBLE), category, tomorrow2Days, account)
+                    Currency.RUBLE), categoryIn, tomorrow2Days, account)
     )
 
     override fun getById(id: Long): Operation? {

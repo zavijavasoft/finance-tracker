@@ -1,10 +1,7 @@
 package com.mashjulal.android.financetracker.di
 
 import com.mashjulal.android.financetracker.domain.interactor.*
-import com.mashjulal.android.financetracker.domain.repository.AccountRepository
-import com.mashjulal.android.financetracker.domain.repository.BalanceRepository
-import com.mashjulal.android.financetracker.domain.repository.CurrencyRepository
-import com.mashjulal.android.financetracker.domain.repository.OperationRepository
+import com.mashjulal.android.financetracker.domain.repository.*
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -33,4 +30,10 @@ class InteractorModule {
             : RequestAccountInteractor =
             RequestAccountInteractorImpl(accountRepository)
 
+    @Singleton
+    @Provides
+    fun providesGetDataForOptionEditInteractor(accountRepository: AccountRepository,
+                                               categoryRepository: CategoryRepository)
+            : GetDataForOptionEditInteractor =
+            GetDataForOptionEditInteractorImpl(accountRepository, categoryRepository)
 }

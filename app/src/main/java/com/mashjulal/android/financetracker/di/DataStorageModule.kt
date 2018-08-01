@@ -1,14 +1,8 @@
 package com.mashjulal.android.financetracker.di
 
 import com.mashjulal.android.financetracker.data.currencyconvertapi.CurrencyService
-import com.mashjulal.android.financetracker.domain.repository.AccountRepository
-import com.mashjulal.android.financetracker.domain.repository.BalanceRepository
-import com.mashjulal.android.financetracker.domain.repository.CurrencyRepository
-import com.mashjulal.android.financetracker.domain.repository.OperationRepository
-import com.mashjulal.android.financetracker.stub.repository.AccountRepositoryStub
-import com.mashjulal.android.financetracker.stub.repository.BalanceRepositoryStub
-import com.mashjulal.android.financetracker.stub.repository.CurrencyRepositoryStub
-import com.mashjulal.android.financetracker.stub.repository.OperationRepositoryStub
+import com.mashjulal.android.financetracker.domain.repository.*
+import com.mashjulal.android.financetracker.stub.repository.*
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -31,4 +25,8 @@ class DataStorageModule {
     @Singleton
     @Provides
     fun providesOperationRepository(): OperationRepository = OperationRepositoryStub()
+
+    @Singleton
+    @Provides
+    fun providesCategoryRepository(): CategoryRepository = CategoryRepositoryStub()
 }

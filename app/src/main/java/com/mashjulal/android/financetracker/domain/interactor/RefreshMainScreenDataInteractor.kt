@@ -75,14 +75,16 @@ class RefreshMainScreenDataInteractorImpl @Inject constructor(
     }
 
     private fun createIncomingsModel(operations: List<Operation>): IncomingsPreviewViewModel {
-        val balance = calculateTotal(operations, operations[0].amount.currency)
+        val balance = calculateTotal(operations, if (operations.isNotEmpty()) operations[0].amount.currency
+        else Currency.RUBLE)
         return IncomingsPreviewViewModel(balance,
                 operations.subList(0, min(MAX_ITEM_IN_LIST_COUNT, operations.size)),
                 operations.size > MAX_ITEM_IN_LIST_COUNT)
     }
 
     private fun createOutgoingsModel(operations: List<Operation>): OutgoingsPreviewViewModel {
-        val balance = calculateTotal(operations, operations[0].amount.currency)
+        val balance = calculateTotal(operations, if (operations.isNotEmpty()) operations[0].amount.currency
+        else Currency.RUBLE)
         return OutgoingsPreviewViewModel(balance,
                 operations.subList(0, min(MAX_ITEM_IN_LIST_COUNT, operations.size)),
                 operations.size > MAX_ITEM_IN_LIST_COUNT)
