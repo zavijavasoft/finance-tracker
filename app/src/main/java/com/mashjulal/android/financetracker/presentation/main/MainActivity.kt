@@ -7,6 +7,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.Toast
 import com.mashjulal.android.financetracker.R
 import com.mashjulal.android.financetracker.domain.financialcalculations.OperationType
 import com.mashjulal.android.financetracker.presentation.editoperation.EditOperationActivity
@@ -49,7 +50,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
         var fragment: Fragment? = null
-        // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.navItemMain -> {
                 // open main page
@@ -73,11 +73,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun onAddIncomingsClicked() {
-        startActivity(EditOperationActivity.newIntent(this, OperationType.INCOMINGS.name))
+    override fun onAddOperationClicked(operationType: OperationType, accountName: String) {
+        startActivity(EditOperationActivity.newIntent(this, operationType, accountName))
     }
 
-    override fun onAddOutgoingsClicked() {
-        startActivity(EditOperationActivity.newIntent(this, OperationType.OUTGOINGS.name))
+    override fun onErrorOccurred(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

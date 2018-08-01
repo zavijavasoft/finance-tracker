@@ -8,62 +8,64 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
+import com.mashjulal.android.financetracker.App
 import com.mashjulal.android.financetracker.R
-import com.mashjulal.android.financetracker.data.OperationRepositoryImpl
 import com.mashjulal.android.financetracker.domain.financialcalculations.*
 import com.mashjulal.android.financetracker.domain.financialcalculations.Currency
-import com.mashjulal.android.financetracker.domain.interactor.AddOperationInteractorImpl
 import kotlinx.android.synthetic.main.activity_edit_operation.*
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 private const val ARG_OPERATION_TYPE = "type"
+private const val ARG_OPERATION_ACCOUNT = "account"
 
 private const val MAX_AMOUNT_DIGIT_COUNT = 12
 
 class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
 
-    private lateinit var presenter: EditOperationPresenter
+    @Inject
+    lateinit var presenter: EditOperationPresenter
     private val calendar: Calendar = Calendar.getInstance()
+    private lateinit var accountName: String
+    private lateinit var operationType: String
+    private lateinit var categories: Map<OperationType, List<Category>>
+    private lateinit var accounts: List<Account>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_operation)
 
-        // TODO: di
-        presenter = EditOperationPresenter(AddOperationInteractorImpl(OperationRepositoryImpl()))
-
-        parseArgs()
+        App.appComponent.inject(this)
         initLayout()
+        parseArgs()
         setResult(Activity.RESULT_CANCELED)
-    }
-
-    private fun parseArgs() {
-        val type = intent.getStringExtra(ARG_OPERATION_TYPE)
-        spinnerOperationType.setSelection(if (type == "incomings") 0 else 1)
     }
 
     private fun initLayout() {
         numberKeyboard.setListener(object : NumberKeyboardListener {
-            override fun onNumberClicked(p0: Int) {
-                val amountRepr = etAmount.text.toString()
+            override fun onNumberClicked(number: Int) {
+                val amount = etAmount.text.toString()
 
-                if (amountRepr == "0") {
-                    if (p0 != 0) {
-                        etAmount.setText(p0.toString())
+                if (amount == "0") {
+                    if (number != 0) {
+                        etAmount.setText(number.toString())
                     }
                     return
                 }
 
-                val doteIndex = amountRepr.indexOf(".")
+                val doteIndex = amount.indexOf(".")
                 val noDot = doteIndex == -1
-                val lessThanThreeDigitsAfterDot = doteIndex > amountRepr.length - 3
-                val amountBelowLimit = amountRepr.length < MAX_AMOUNT_DIGIT_COUNT
+                val lessThanThreeDigitsAfterDot = doteIndex > amount.length - 3
+                val amountBelowLimit = amount.length < MAX_AMOUNT_DIGIT_COUNT
 
                 if ((noDot || lessThanThreeDigitsAfterDot) && amountBelowLimit) {
-                    etAmount.text.append(p0.toString())
+                    etAmount.text.append(number.toString())
                 }
             }
 
@@ -87,6 +89,7 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
             showDateDialog()
         }
         showSelectedDate()
+        presenter.requestData()
     }
 
     private fun showDateDialog() {
@@ -106,6 +109,13 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
         btnSelectDate.text = SimpleDateFormat.getDateInstance().format(calendar.time)
     }
 
+    private fun parseArgs() {
+        operationType = intent.getStringExtra(ARG_OPERATION_TYPE)
+        spinnerOperationType.setSelection(if (operationType == OperationType.INCOMINGS.name) 0 else 1)
+
+        accountName = intent.getStringExtra(ARG_OPERATION_ACCOUNT)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_activity_edit_operation, menu)
         return true
@@ -121,20 +131,67 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
     }
 
     private fun finishEdit() {
-        val amount = BigDecimal(etAmount.text.toString())
-        val currency = if (spinnerCurrency.selectedItem.toString() == "$") Currency.DOLLAR else Currency.RUBLE
-        val date = calendar.time
-        val operationType = spinnerOperationType.selectedItem.toString()
-        val category = Category(spinnerCategory.selectedItem.toString(), R.drawable.ic_github)
-
-        val operation: Operation = when (operationType) {
-            getString(R.string.incomings) ->
-                IncomingsOperation(Money(amount, currency), category, date, Account("John Smith"))
-            getString(R.string.outgoings) ->
-                OutgoingsOperation(Money(amount, currency), category, date, Account("John Smith"))
-            else -> throw Exception("Wrong operation type $operationType")
+        let {
+            val amount = BigDecimal(etAmount.text.toString())
+            val currency = if (spinnerCurrency.selectedItem.toString() == "$") Currency.DOLLAR else Currency.RUBLE
+            val date = calendar.time
+            val operationTypeRepr = spinnerOperationType.selectedItem as String
+            val operationType = if (operationTypeRepr == getString(R.string.incomings)) OperationType.INCOMINGS
+            else OperationType.OUTGOINGS
+            val account = Account(spinnerAccount.selectedItem as String)
+            val category = categories[operationType]
+                    ?.find { it.title == spinnerCategory.selectedItem as String }
+                    ?: throw Exception("Category can't be null")
+            val operation = when (operationType) {
+                OperationType.INCOMINGS -> IncomingsOperation(Money(amount, currency), category, date, account)
+                OperationType.OUTGOINGS -> OutgoingsOperation(Money(amount, currency), category, date, account)
+            }
+            presenter.saveOperation(operation)
         }
-        presenter.saveOperation(operation)
+    }
+
+    override fun setData(accounts: List<Account>, categories: Map<OperationType, List<Category>>) {
+        setOperationTypes()
+        setAccounts(accounts)
+        setCategories(categories)
+    }
+
+    private fun setOperationTypes() {
+        spinnerOperationType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+
+            override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?,
+                                        position: Int, id: Long) {
+                val operation = spinnerOperationType.selectedItem
+                val operationType = if (operation == getString(R.string.incomings)) OperationType.INCOMINGS
+                else OperationType.OUTGOINGS
+
+                spinnerCategory.adapter = ArrayAdapter(this@EditOperationActivity,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        categories[operationType]?.map { it.title })
+                spinnerCategory.setSelection(0)
+            }
+
+        }
+    }
+
+    private fun setAccounts(data: List<Account>) {
+        this.accounts = data
+        val adapter = ArrayAdapter(this,
+                android.R.layout.simple_spinner_dropdown_item, accounts.map { it.title })
+        spinnerAccount.adapter = adapter
+        val position = adapter.getPosition(accountName)
+        spinnerAccount.setSelection(position)
+    }
+
+    private fun setCategories(categories: Map<OperationType, List<Category>>) {
+        this.categories = categories
+        val operation = OperationType.valueOf(operationType)
+        val adapter = ArrayAdapter(this,
+                android.R.layout.simple_spinner_dropdown_item, categories[operation].orEmpty()
+                .map { it.title })
+        spinnerCategory.adapter = adapter
+        spinnerCategory.setSelection(0)
     }
 
     override fun closeEditWindow() {
@@ -154,9 +211,10 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
 
     companion object {
 
-        fun newIntent(context: Context, type: String) =
+        fun newIntent(context: Context, type: OperationType, account: String) =
                 with(Intent(context, EditOperationActivity::class.java)) {
-                    putExtra(ARG_OPERATION_TYPE, type)
+                    putExtra(ARG_OPERATION_TYPE, type.name)
+                    putExtra(ARG_OPERATION_ACCOUNT, account)
                 }!!
     }
 }

@@ -6,8 +6,9 @@ import com.mashjulal.android.financetracker.domain.interactor.RefreshMainScreenD
 import com.mashjulal.android.financetracker.domain.interactor.RequestAccountInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class MainPresenter(
+class MainPresenter @Inject constructor(
         private val refreshInteractor: RefreshMainScreenDataInteractor,
         private val accountInteractor: RequestAccountInteractor
 ) {

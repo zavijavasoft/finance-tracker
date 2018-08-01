@@ -6,7 +6,7 @@ data class Money(
         private val _amount: BigDecimal,
         val currency: Currency
 ) {
-    var amount: BigDecimal = _amount.asMoney()
+    val amount: BigDecimal = _amount.asMoney()
 
     constructor(money: Money, currency: Currency) : this(money.amount, currency)
 

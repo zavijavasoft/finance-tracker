@@ -43,4 +43,7 @@
     <string name="title_activity_edit_operation">Operation…</string>
     <string name="accounts">Accounts</string>
     <string name="all_accounts">All</string>
+    <string name="error_operation_cant_be_added_to_all">Operation can\'t be add to all account.
+        Please select other account.</string>
+    <string name="account">Account</string>
 </resources>

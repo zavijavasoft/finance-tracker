@@ -16,7 +16,7 @@ class CalculationsTest {
         )
 
         val expected = Money(BigDecimal.valueOf(45).asMoney(), Currency.RUBLE)
-        val actual = calculateTotal(operations)
+        val actual = calculateTotal(operations, Currency.RUBLE)
 
         assertEquals(expected, actual)
     }
@@ -30,7 +30,7 @@ class CalculationsTest {
         )
 
         val expected = Money(BigDecimal.valueOf(-45).asMoney(), Currency.RUBLE)
-        val actual = calculateTotal(operations)
+        val actual = calculateTotal(operations, Currency.RUBLE)
 
         assertEquals(expected, actual)
     }
@@ -44,7 +44,7 @@ class CalculationsTest {
         )
 
         val expected = Money(BigDecimal.valueOf(-15).asMoney(), Currency.RUBLE)
-        val actual = calculateTotal(operations)
+        val actual = calculateTotal(operations, Currency.RUBLE)
 
         assertEquals(expected, actual)
     }
@@ -58,7 +58,7 @@ class CalculationsTest {
         )
 
         val expected = Money(BigDecimal.valueOf(-45).asMoney(), Currency.RUBLE)
-        val actual = calculateTotal(operations)
+        val actual = calculateTotal(operations, Currency.RUBLE)
 
         assertEquals(expected, actual)
     }
@@ -72,21 +72,7 @@ class CalculationsTest {
         )
 
         val expected = Money(BigDecimal.valueOf(60).asMoney(), Currency.DOLLAR)
-        val actual = calculateTotal(operations)
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `Test calculateTotal with different currencies`() {
-        val operations: MutableList<Operation> = mutableListOf(
-                initOutgoings(BigDecimal.valueOf(10), Currency.RUBLE),
-                initOutgoings(BigDecimal.valueOf(15), Currency.DOLLAR),
-                initOutgoings(BigDecimal.valueOf(20), Currency.RUBLE)
-        )
-
-        val expected = Money(BigDecimal.valueOf(-973.87), Currency.RUBLE)
-        val actual = calculateTotal(operations, BigDecimal(62.924896))
+        val actual = calculateTotal(operations, Currency.DOLLAR)
 
         assertEquals(expected, actual)
     }
@@ -96,14 +82,14 @@ class CalculationsTest {
         val operations: MutableList<Operation> = mutableListOf()
 
         val expected = Money(BigDecimal.ZERO, Currency.RUBLE)
-        val actual = calculateTotal(operations)
+        val actual = calculateTotal(operations, Currency.RUBLE)
 
         assertEquals(expected, actual)
     }
 
     private fun initOperation(operationType: OperationType, amount: BigDecimal, currency: Currency): Operation {
         val am = Money(amount, currency)
-        val c = Category("Cat", -1)
+        val c = Category(OperationType.INCOMINGS, "Cat", -1)
         val d = Calendar.getInstance().time
         val ac = Account("Account")
 

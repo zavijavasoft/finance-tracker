@@ -13,11 +13,14 @@ import java.util.*
  */
 sealed class Operation(
         open val operationType: OperationType,
-        open val amount: Money,
+        _amount: Money,
         open val category: Category,
         open val date: Date,
         open val account: Account
-)
+) {
+
+    open val amount = _amount.abs()
+}
 
 data class IncomingsOperation(
         override val amount: Money,
@@ -37,9 +40,9 @@ data class OutgoingsOperation(
  * Enumeration class of currencies.
  * Each enum provides with it's locale.
  */
-enum class Currency(val symbol: String) {
-    RUBLE("\u20BD"),
-    DOLLAR("$")
+enum class Currency(val symbol: String, var rate: String) {
+    RUBLE("\u20BD", "RUB"),
+    DOLLAR("$", "USD")
 }
 
 /**
@@ -49,4 +52,4 @@ enum class OperationType {
     INCOMINGS, OUTGOINGS
 }
 
-fun BigDecimal.asMoney() = setScale(2, RoundingMode.HALF_EVEN)!!
+fun BigDecimal.asMoney(): BigDecimal = setScale(2, RoundingMode.HALF_EVEN)

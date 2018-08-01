@@ -1,4 +1,4 @@
-package com.mashjulal.android.financetracker.data
+package com.mashjulal.android.financetracker.stub.repository
 
 import com.mashjulal.android.financetracker.domain.financialcalculations.Account
 import com.mashjulal.android.financetracker.domain.financialcalculations.Balance
@@ -12,7 +12,7 @@ import java.util.*
 private val calendar = Calendar.getInstance()
 private val tomorrow = Date(calendar.timeInMillis + 1000 * 60 * 60 * 24)
 
-class BalanceRepositoryImpl : BalanceRepository {
+class BalanceRepositoryStub : BalanceRepository {
 
     private val data: HashMap<Int, Balance> = hashMapOf(
             1 to Balance(Account("John Smith"), Money(BigDecimal.ZERO, Currency.RUBLE), tomorrow),

@@ -3,25 +3,22 @@ package com.mashjulal.android.financetracker.presentation.main
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import com.example.delegateadapter.delegate.diff.DiffUtilCompositeAdapter
 import com.example.delegateadapter.delegate.diff.IComparableItem
+import com.mashjulal.android.financetracker.App
 import com.mashjulal.android.financetracker.R
-import com.mashjulal.android.financetracker.data.AccountRepositoryImpl
-import com.mashjulal.android.financetracker.data.BalanceRepositoryImpl
-import com.mashjulal.android.financetracker.data.CurrencyRepositoryImpl
-import com.mashjulal.android.financetracker.data.OperationRepositoryImpl
-import com.mashjulal.android.financetracker.data.currencyconvertapi.RetrofitHelper
 import com.mashjulal.android.financetracker.domain.financialcalculations.Account
-import com.mashjulal.android.financetracker.domain.interactor.RefreshMainScreenDataInteractorImpl
-import com.mashjulal.android.financetracker.domain.interactor.RequestAccountInteractorImpl
+import com.mashjulal.android.financetracker.domain.financialcalculations.OperationType
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.balance.BalanceDelegateAdapter
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.IncomingsPreviewDelegateAdapter
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.OutgoingsPreviewDelegateAdapter
 import kotlinx.android.synthetic.main.fragment_main.*
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass for main page.
@@ -33,21 +30,21 @@ import kotlinx.android.synthetic.main.fragment_main.*
  */
 class MainFragment : Fragment(), MainPresenter.View {
 
-    private var presenter: MainPresenter? = null
+    @Inject
+    lateinit var presenter: MainPresenter
     private var listener: OnFragmentInteractionListener? = null
     private lateinit var spinnerAccounts: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        presenter = MainPresenter(
-                RefreshMainScreenDataInteractorImpl(
-                        BalanceRepositoryImpl(),
-                        OperationRepositoryImpl(), CurrencyRepositoryImpl(RetrofitHelper())),
-                RequestAccountInteractorImpl(AccountRepositoryImpl()))
-        presenter?.attachView(this)
+        App.appComponent.inject(this)
+        presenter.attachView(this)
+    }
 
+    private fun setActionBar() {
         setHasOptionsMenu(true)
+        (activity as AppCompatActivity).supportActionBar?.title = ""
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -56,21 +53,32 @@ class MainFragment : Fragment(), MainPresenter.View {
 
         val item = menu.findItem(R.id.menuSpinnerAccounts)
         spinnerAccounts = item.actionView as Spinner
+        spinnerAccounts.adapter = ArrayAdapter<String>(context,
+                R.layout.item_spinner_toolbar, mutableListOf())
         spinnerAccounts.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             override fun onNothingSelected(parentView: AdapterView<*>?) {}
 
             override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?,
                                         position: Int, id: Long) {
-                val accountTitle = spinnerAccounts.adapter.getItem(position) as String
-                if (accountTitle == getString(R.string.all_accounts)) {
-                    presenter?.refreshData()
-                } else {
-                    presenter?.refreshData(accountTitle)
-                }
+                val accountTitle = if (position > 0) spinnerAccounts.adapter.getItem(position) as String
+                else ""
+                refreshDataCards(accountTitle)
             }
         }
-        presenter?.getAccountList()
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        super.onPrepareOptionsMenu(menu)
+        presenter.getAccountList()
+    }
+
+    private fun refreshDataCards(accountName: String = "") {
+        if (accountName.isEmpty()) {
+            presenter.refreshData()
+        } else {
+            presenter.refreshData(accountName)
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -82,14 +90,20 @@ class MainFragment : Fragment(), MainPresenter.View {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        activity?.invalidateOptionsMenu()
+    }
+
     override fun onResume() {
         super.onResume()
-        presenter?.attachView(this)
+        presenter.attachView(this)
+        refreshDataCards()
     }
 
     override fun onPause() {
         super.onPause()
-        presenter?.detachView()
+        presenter.detachView()
     }
 
     override fun onDetach() {
@@ -99,24 +113,33 @@ class MainFragment : Fragment(), MainPresenter.View {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val newIncomingOperationClick = View.OnClickListener {
-            listener!!.onAddIncomingsClicked()
-        }
-        val newOutgoingOperationClick = View.OnClickListener {
-            listener!!.onAddOutgoingsClicked()
-        }
+        setActionBar()
 
         val adapter = DiffUtilCompositeAdapter.Builder()
                 .add(BalanceDelegateAdapter())
-                .add(IncomingsPreviewDelegateAdapter(getString(R.string.incomings), newIncomingOperationClick))
-                .add(OutgoingsPreviewDelegateAdapter(getString(R.string.outgoings), newOutgoingOperationClick))
+                .add(IncomingsPreviewDelegateAdapter(getString(R.string.incomings),
+                        View.OnClickListener {
+                            callAddOperation(OperationType.INCOMINGS)
+                        }))
+                .add(OutgoingsPreviewDelegateAdapter(getString(R.string.outgoings),
+                        View.OnClickListener {
+                            callAddOperation(OperationType.OUTGOINGS)
+                        }))
                 .build()
         rvMenu.adapter = adapter
+    }
+
+    private fun callAddOperation(operationType: OperationType) {
+        if (spinnerAccounts.selectedItemPosition == 0) {
+            listener?.onErrorOccurred(getString(R.string.error_operation_cant_be_added_to_all))
+            return
+        }
+        val accountName = spinnerAccounts.selectedItem as String
+        listener?.onAddOperationClicked(operationType, accountName)
     }
 
     override fun refreshData(data: List<IComparableItem>) {
@@ -127,8 +150,10 @@ class MainFragment : Fragment(), MainPresenter.View {
     override fun setAccounts(data: List<Account>) {
         val entries = listOf(getString(R.string.all_accounts)) + data.map { it.title }
         val adapter = ArrayAdapter<String>(context,
-                android.R.layout.simple_spinner_dropdown_item, entries)
+                R.layout.item_spinner_toolbar, entries)
         spinnerAccounts.adapter = adapter
+        spinnerAccounts.gravity = Gravity.END
+        spinnerAccounts.setSelection(0)
     }
 
     companion object {
@@ -142,7 +167,7 @@ class MainFragment : Fragment(), MainPresenter.View {
     }
 
     interface OnFragmentInteractionListener {
-        fun onAddIncomingsClicked()
-        fun onAddOutgoingsClicked()
+        fun onAddOperationClicked(operationType: OperationType, accountName: String)
+        fun onErrorOccurred(message: String)
     }
 }
