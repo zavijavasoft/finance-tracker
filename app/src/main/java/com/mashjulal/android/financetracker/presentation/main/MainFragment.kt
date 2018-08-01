@@ -8,6 +8,9 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import com.arellomobile.mvp.MvpAppCompatFragment
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.delegateadapter.delegate.diff.DiffUtilCompositeAdapter
 import com.example.delegateadapter.delegate.diff.IComparableItem
 import com.mashjulal.android.financetracker.App
@@ -28,19 +31,18 @@ import javax.inject.Inject
  * create an instance of this fragment.
  *
  */
-class MainFragment : Fragment(), MainPresenter.View {
+class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
 
     @Inject
+    @InjectPresenter
     lateinit var presenter: MainPresenter
+
+    @ProvidePresenter
+    fun providePresenter() = presenter
+
+
     private var listener: OnFragmentInteractionListener? = null
     private lateinit var spinnerAccounts: Spinner
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        App.appComponent.inject(this)
-        presenter.attachView(this)
-    }
 
     private fun setActionBar() {
         setHasOptionsMenu(true)
@@ -83,6 +85,7 @@ class MainFragment : Fragment(), MainPresenter.View {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        App.appComponent.inject(this)
         if (context is OnFragmentInteractionListener) {
             listener = context
         } else {
@@ -97,13 +100,8 @@ class MainFragment : Fragment(), MainPresenter.View {
 
     override fun onResume() {
         super.onResume()
-        presenter.attachView(this)
+        //presenter.attachView(this)
         refreshDataCards()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        presenter.detachView()
     }
 
     override fun onDetach() {
