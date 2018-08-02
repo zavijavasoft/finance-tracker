@@ -3,6 +3,8 @@ package com.mashjulal.android.financetracker.presentation.main
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.arellomobile.mvp.MvpView
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.delegateadapter.delegate.diff.IComparableItem
 import com.mashjulal.android.financetracker.domain.financialcalculations.Account
 import com.mashjulal.android.financetracker.domain.interactor.RefreshMainScreenDataInteractor
@@ -59,6 +61,7 @@ class MainPresenter @Inject constructor(
     interface View : MvpView {
 
         fun refreshData(data: List<IComparableItem>)
+        @StateStrategyType(SkipStrategy::class)
         fun setAccounts(data: List<Account>)
     }
 }
