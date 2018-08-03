@@ -6,6 +6,11 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'com.squareup.sqldelight'
+
+
+
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -41,6 +46,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    implementation 'android.arch.persistence:db-framework:1.0.0'
+
     implementation 'com.github.liverm0r:delegateadapters:v2.0'
 
     implementation 'com.github.davidmigloz:number-keyboard:2.0.1'
@@ -61,4 +68,10 @@ dependencies {
     implementation "com.arello-mobile:moxy-app-compat:$moxy_version"
     kapt "com.arello-mobile:moxy-compiler:$moxy_version"
 
+
+    implementation 'com.squareup.sqlbrite3:sqlbrite:3.2.0'
+    implementation 'com.squareup.sqlbrite3:sqlbrite-kotlin:3.2.0'
+
+    implementation "com.google.auto.value:auto-value-annotations:1.6.2"
+    kapt "com.google.auto.value:auto-value:1.6.2"
 }
