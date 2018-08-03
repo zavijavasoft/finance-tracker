@@ -2,6 +2,7 @@ package com.mashjulal.android.financetracker.stub.repository
 
 import com.mashjulal.android.financetracker.domain.financialcalculations.Account
 import com.mashjulal.android.financetracker.domain.repository.AccountRepository
+import io.reactivex.Single
 
 class AccountRepositoryStub : AccountRepository {
 
@@ -14,7 +15,7 @@ class AccountRepositoryStub : AccountRepository {
         return data[id]
     }
 
-    override fun getAll(): List<Account> {
-        return data.map { it.value }
+    override fun getAll(): Single<List<Account>> {
+        return Single.fromCallable { data.map { it.value } }
     }
 }

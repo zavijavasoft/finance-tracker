@@ -49,7 +49,18 @@ enum class Currency(val symbol: String, var rate: String) {
  * Enumeration class of operation types.
  */
 enum class OperationType {
-    INCOMINGS, OUTGOINGS
+    INCOMINGS, OUTGOINGS;
+
+    companion object {
+        fun getTypeByString(stringType: String): OperationType {
+            return when (stringType) {
+                "INCOMINGS" -> INCOMINGS
+                "OUTGOINGS" -> OUTGOINGS
+                else -> OUTGOINGS
+            }
+        }
+
+    }
 }
 
 fun BigDecimal.asMoney(): BigDecimal = setScale(2, RoundingMode.HALF_EVEN)

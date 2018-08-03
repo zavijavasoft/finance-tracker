@@ -6,6 +6,7 @@ import com.mashjulal.android.financetracker.domain.financialcalculations.Operati
 import com.mashjulal.android.financetracker.domain.repository.AccountRepository
 import com.mashjulal.android.financetracker.domain.repository.CategoryRepository
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
 interface GetDataForOptionEditInteractor {
@@ -17,10 +18,13 @@ class GetDataForOptionEditInteractorImpl @Inject constructor(
         private val categoryRepository: CategoryRepository
 ) : GetDataForOptionEditInteractor {
 
-    override fun execute(): Single<Pair<List<Account>, Map<OperationType, List<Category>>>> =
-            Single.fromCallable {
-                val accounts = accountRepository.getAll()
-                val categories = categoryRepository.getAll().groupBy { it.operationType }
-                accounts to categories
-            }
+    override fun execute(): Single<Pair<List<Account>, Map<OperationType, List<Category>>>> {
+
+        val accounts = accountRepository.getAll()
+        val categories = categoryRepository.getAll()
+        return Single.zip(accounts, categories, BiFunction { accountList, categoriesList ->
+            accountList to categoriesList.groupBy { it.operationType }
+        })
+    }
+
 }

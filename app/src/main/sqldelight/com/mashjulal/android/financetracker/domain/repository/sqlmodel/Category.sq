@@ -1,0 +1,24 @@
+CREATE TABLE Category
+ (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    category TEXT NOT NULL UNIQUE,
+    subcategory TEXT NOT NULL,
+    type TEXT NOT NULL
+
+);
+
+SelectAll:
+SELECT * FROM Category;
+
+SelectCategoryById:
+SELECT * FROM Category WHERE id = ?;
+
+SelectCategoryByType:
+SELECT * FROM Category WHERE type = ?;
+
+InsertCategory:
+INSERT INTO Category(category, subcategory, type)
+VALUES (?, ?, ?);
+
+DeleteCategory:
+DELETE FROM Category WHERE category = ?;
