@@ -17,6 +17,7 @@ abstract class InnerCategory : CategoryModel {
         val ALL_CATEGORIES_MAPPER: RowMapper<InnerCategory> = FACTORY.selectAllMapper()
         val SELECT_CATEGORY_BY_ID: RowMapper<InnerCategory> = FACTORY.selectCategoryByIdMapper()
         val SELECT_CATEGORY_BY_TYPE: RowMapper<InnerCategory> = FACTORY.selectCategoryByTypeMapper()
+        val SELECT_CATEGORY_BY_CATEGORY: RowMapper<InnerCategory> = FACTORY.selectCategoryByCategoryMapper()
     }
 
 

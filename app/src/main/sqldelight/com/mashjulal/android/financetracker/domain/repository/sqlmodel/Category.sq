@@ -10,6 +10,9 @@ CREATE TABLE Category
 SelectAll:
 SELECT * FROM Category;
 
+SelectCategoryByCategory:
+SELECT * FROM Category WHERE category = ?;
+
 SelectCategoryById:
 SELECT * FROM Category WHERE id = ?;
 

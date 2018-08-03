@@ -12,6 +12,6 @@ class InnerSQLiteCallback constructor(version: Int) : SupportSQLiteOpenHelper.Ca
     }
 
     override fun onUpgrade(db: SupportSQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        db?.execSQL("DROP TABLE Category")
     }
 }
