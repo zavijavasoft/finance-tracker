@@ -83,6 +83,7 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
         }
     }
 
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         App.appComponent.inject(this)
@@ -91,6 +92,7 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
         } else {
             throw ClassCastException(context.toString() + " must implement OnFragmentInteractionListener")
         }
+        presenter.initialCheck()
     }
 
     override fun onStart() {
@@ -100,7 +102,6 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
 
     override fun onResume() {
         super.onResume()
-        //presenter.attachView(this)
         refreshDataCards()
     }
 

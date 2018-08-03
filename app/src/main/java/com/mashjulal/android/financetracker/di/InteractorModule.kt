@@ -2,6 +2,7 @@ package com.mashjulal.android.financetracker.di
 
 import com.mashjulal.android.financetracker.domain.interactor.*
 import com.mashjulal.android.financetracker.domain.repository.*
+import com.mashjulal.android.financetracker.domain.repository.sqliteimpl.SQLiteCore
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -36,4 +37,9 @@ class InteractorModule {
                                                categoryRepository: CategoryRepository)
             : GetDataForOptionEditInteractor =
             GetDataForOptionEditInteractorImpl(accountRepository, categoryRepository)
+
+    @Singleton
+    @Provides
+    fun prividesStorageConsistencyInteractor(sqlCore: SQLiteCore): StorageConsistencyInteractor =
+            StorageConsistanceInteracrorImpl(sqlCore)
 }

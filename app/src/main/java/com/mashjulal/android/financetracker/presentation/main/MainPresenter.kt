@@ -1,5 +1,6 @@
 package com.mashjulal.android.financetracker.presentation.main
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.arellomobile.mvp.MvpView
@@ -9,6 +10,7 @@ import com.example.delegateadapter.delegate.diff.IComparableItem
 import com.mashjulal.android.financetracker.domain.financialcalculations.Account
 import com.mashjulal.android.financetracker.domain.interactor.RefreshMainScreenDataInteractor
 import com.mashjulal.android.financetracker.domain.interactor.RequestAccountInteractor
+import com.mashjulal.android.financetracker.domain.interactor.StorageConsistencyInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -16,20 +18,26 @@ import javax.inject.Inject
 @InjectViewState
 class MainPresenter @Inject constructor(
         private val refreshInteractor: RefreshMainScreenDataInteractor,
-        private val accountInteractor: RequestAccountInteractor
+        private val accountInteractor: RequestAccountInteractor,
+        private val storageConsistencyInteractor: StorageConsistencyInteractor
 ) : MvpPresenter<MainPresenter.View>() {
 
-    /*
-        private var view: View? = null
+    var justStarted = true
 
-        fun attachView(view: View) {
-            this.view = view
+    fun initialCheck() {
+        if (justStarted) {
+            justStarted = false
+            storageConsistencyInteractor.check()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        Log.d("Записи корректны", "")
+                    }, { e ->
+                        Log.d("Ошибка уникальности", e.localizedMessage, e)
+                    })
         }
+    }
 
-        fun detachView() {
-            this.view = null
-        }
-    */
     fun refreshData() {
         refreshInteractor.execute()
                 .subscribeOn(Schedulers.io())
