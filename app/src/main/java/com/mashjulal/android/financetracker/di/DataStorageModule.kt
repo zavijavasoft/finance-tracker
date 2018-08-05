@@ -3,12 +3,7 @@ package com.mashjulal.android.financetracker.di
 import com.mashjulal.android.financetracker.App
 import com.mashjulal.android.financetracker.data.currencyconvertapi.CurrencyService
 import com.mashjulal.android.financetracker.domain.repository.*
-import com.mashjulal.android.financetracker.domain.repository.sqliteimpl.CategoryRepositoryImpl
-import com.mashjulal.android.financetracker.domain.repository.sqliteimpl.SQLiteCore
-import com.mashjulal.android.financetracker.stub.repository.AccountRepositoryStub
-import com.mashjulal.android.financetracker.stub.repository.BalanceRepositoryStub
-import com.mashjulal.android.financetracker.stub.repository.CurrencyRepositoryStub
-import com.mashjulal.android.financetracker.stub.repository.OperationRepositoryStub
+import com.mashjulal.android.financetracker.domain.repository.sqliteimpl.*
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -19,19 +14,19 @@ class DataStorageModule {
 
     @Singleton
     @Provides
-    fun providesAccountRepository(): AccountRepository = AccountRepositoryStub()
+    fun providesAccountRepository(core: SQLiteCore): AccountRepository = AccountRepositoryImpl(core)
 
     @Singleton
     @Provides
-    fun providesBalanceRepository(): BalanceRepository = BalanceRepositoryStub()
+    fun providesBalanceRepository(sqliteCore: SQLiteCore): BalanceRepository = BalanceRepositoryImpl(sqliteCore)
 
     @Singleton
     @Provides
-    fun providesCurrencyRepository(currencyService: CurrencyService): CurrencyRepository = CurrencyRepositoryStub(currencyService)
+    fun providesCurrencyRepository(currencyService: CurrencyService): CurrencyRepository = CurrencyRepositoryImpl(currencyService)
 
     @Singleton
     @Provides
-    fun providesOperationRepository(): OperationRepository = OperationRepositoryStub()
+    fun providesOperationRepository(sqliteCore: SQLiteCore): OperationRepository = OperationRepositoryImpl(sqliteCore)
 
     @Singleton
     @Provides

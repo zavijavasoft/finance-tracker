@@ -13,17 +13,19 @@ class InteractorModule {
     @Singleton
     @Provides
     fun providesAddOperationInteractor(balanceRepository: BalanceRepository,
+                                       accountRepository: AccountRepository,
                                        currencyRepository: CurrencyRepository,
                                        operationRepository: OperationRepository)
             : AddOperationInteractor = AddOperationInteractorImpl(balanceRepository,
-            currencyRepository, operationRepository)
+            accountRepository, currencyRepository, operationRepository)
 
     @Singleton
     @Provides
-    fun providesRefreshMainScreenDataInteractor(balanceRepository: BalanceRepository,
+    fun providesRefreshMainScreenDataInteractor(currencyRepository: CurrencyRepository,
+                                                balanceRepository: BalanceRepository,
                                                 operationRepository: OperationRepository)
             : RefreshMainScreenDataInteractor = RefreshMainScreenDataInteractorImpl(
-            balanceRepository, operationRepository)
+            currencyRepository, balanceRepository, operationRepository)
 
     @Singleton
     @Provides
