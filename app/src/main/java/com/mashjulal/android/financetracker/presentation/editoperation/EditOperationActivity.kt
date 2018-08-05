@@ -142,10 +142,7 @@ class EditOperationActivity : AppCompatActivity(), EditOperationPresenter.View {
             val category = categories[operationType]
                     ?.find { it.title == spinnerCategory.selectedItem as String }
                     ?: throw Exception("Category can't be null")
-            val operation = when (operationType) {
-                OperationType.INCOMINGS -> IncomingsOperation(Money(amount, currency), category, date, account)
-                OperationType.OUTGOINGS -> OutgoingsOperation(Money(amount, currency), category, date, account)
-            }
+            val operation = Operation(date.time, Money(amount, currency), category, date, account)
             presenter.saveOperation(operation)
         }
     }

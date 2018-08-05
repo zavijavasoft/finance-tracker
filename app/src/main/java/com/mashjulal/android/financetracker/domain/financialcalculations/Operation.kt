@@ -4,45 +4,51 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 
+
 /**
  * Class for representation financial operations.
  * Consists of operation type (incomings, outgoings),
  * money amount, currency.
  *
- * NOTE!! Every negative money amount will be converted to positive value.
+
  */
-sealed class Operation(
-        open val operationType: OperationType,
-        _amount: Money,
-        open val category: Category,
-        open val date: Date,
-        open val account: Account
-) {
+data class Operation(
+        val id: Long = -1,
+        val amount: Money = Money(BigDecimal.ZERO, Currency.RUBLE),
+        val category: Category = Category(),
+        val date: Date = Date(),
+        val account: Account = Account(),
+        val ratio: Double = 1.0
+)
 
-    open val amount = _amount.abs()
-}
-
+/*
 data class IncomingsOperation(
-        override val amount: Money,
-        override val category: Category,
-        override val date: Date,
-        override val account: Account
-) : Operation(OperationType.INCOMINGS, amount, category, date, account)
+) : Operation()
 
 data class OutgoingsOperation(
+        override val id : Long,
         override val amount: Money,
         override val category: Category,
         override val date: Date,
         override val account: Account
-) : Operation(OperationType.OUTGOINGS, amount, category, date, account)
-
+) : Operation(id, OperationType.OUTGOINGS, amount, category, date, account)
+**/
 /**
  * Enumeration class of currencies.
  * Each enum provides with it's locale.
  */
-enum class Currency(val symbol: String, var rate: String) {
-    RUBLE("\u20BD", "RUB"),
-    DOLLAR("$", "USD")
+data class Currency(var rate: String) {
+    companion object {
+        val RUBLE = Currency("RUB")
+        val DOLLAR = Currency("USD")
+    }
+
+    val symbol: String =
+            when (rate) {
+                "RUB" -> "\u20BD"
+                "USD" -> "$"
+                else -> "*"
+            }
 }
 
 /**
