@@ -51,4 +51,7 @@
     <string name="predefined_other_outgoings_category">Other Outgoings</string>
     <string name="predefined_from_other_account_category">From other acoount</string>
     <string name="predefined_to_other_account_category">To other account</string>
+
+    <string name="predefined_account">Cash (RUB)</string>
+
 </resources>

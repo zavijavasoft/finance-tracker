@@ -40,5 +40,6 @@
     <string name="predefined_from_other_account_category">С другого счета</string>
     <string name="predefined_to_other_account_category">На другой счет</string>
 
+    <string name="predefined_account">Наличные рубли</string>
 
 </resources>
