@@ -1,9 +1,9 @@
 CREATE TABLE Category
  (
-    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    category TEXT NOT NULL UNIQUE,
+    id          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    category    TEXT NOT NULL UNIQUE,
     subcategory TEXT NOT NULL,
-    type TEXT NOT NULL
+    type        TEXT NOT NULL
 
 );
 
