@@ -5,7 +5,8 @@ CREATE TABLE Operation(
     currency    TEXT NOT NULL,
     category    TEXT NOT NULL,
     account     TEXT NOT NULL,
-    ratio       REAL NOT NULL
+    ratio       REAL NOT NULL,
+    repeator    TEXT NOT NULL
 
 );
 
@@ -33,8 +34,8 @@ JOIN Account AS A ON O.account = A.title
 WHERE dt BETWEEN ? AND ?;
 
 InsertOperation:
-INSERT INTO Operation(dt, sum, currency, category, account, ratio)
-VALUES (?, ?, ?, ?, ?, ?);
+INSERT INTO Operation(dt, sum, currency, category, account, ratio, repeator)
+VALUES (?, ?, ?, ?, ?, ?, ?);
 
 RemoveOperation:
 DELETE FROM Operation
