@@ -18,25 +18,11 @@ data class Operation(
         val category: Category = Category(),
         val date: Date = Date(),
         val account: Account = Account(),
-        val ratio: Double = 1.0
+        val ratio: Double = 1.0,
+        val repeator: Repeator = Repeator.REPEAT_NONE
 )
 
-/*
-data class IncomingsOperation(
-) : Operation()
 
-data class OutgoingsOperation(
-        override val id : Long,
-        override val amount: Money,
-        override val category: Category,
-        override val date: Date,
-        override val account: Account
-) : Operation(id, OperationType.OUTGOINGS, amount, category, date, account)
-**/
-/**
- * Enumeration class of currencies.
- * Each enum provides with it's locale.
- */
 data class Currency(var rate: String) {
     companion object {
         val RUBLE = Currency("RUB")
@@ -68,5 +54,25 @@ enum class OperationType {
 
     }
 }
+
+enum class Repeator {
+    REPEAT_NONE,
+    REPEAT_WEEKLY,
+    REPEAT_MONTHLY;
+
+
+    companion object {
+        fun getByString(stringType: String): Repeator {
+            return when (stringType) {
+                "REPEAT_NONE" -> REPEAT_NONE
+                "REPEAT_WEEKLY" -> REPEAT_WEEKLY
+                "REPEAT_MONTHLY" -> REPEAT_MONTHLY
+                else -> REPEAT_NONE
+            }
+        }
+
+    }
+}
+
 
 fun BigDecimal.asMoney(): BigDecimal = setScale(2, RoundingMode.HALF_EVEN)

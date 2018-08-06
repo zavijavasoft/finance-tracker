@@ -14,6 +14,7 @@ import java.math.BigDecimal
 interface AddOperationInteractor {
 
     fun execute(operation: Operation): Completable
+    fun executePlanned(): Completable
 }
 
 class AddOperationInteractorImpl(
@@ -22,6 +23,11 @@ class AddOperationInteractorImpl(
         private var currencyRepository: CurrencyRepository,
         private var operationRepository: OperationRepository
 ) : AddOperationInteractor {
+
+
+    override fun executePlanned(): Completable {
+        TODO("Реализовать пусковик запланированных платежей")
+    }
 
     override fun execute(operation: Operation): Completable =
             balanceRepository.getLastByAccount(operation.account)

@@ -41,5 +41,7 @@
     <string name="predefined_to_other_account_category">На другой счет</string>
 
     <string name="predefined_account">Наличные рубли</string>
-
+    <string name="radio_none_text">Одоразовая операция</string>
+    <string name="radio_weekly_text">Повторять каждую неделю</string>
+    <string name="radio_monthly_text">Повторять каждый месяц</string>
 </resources>

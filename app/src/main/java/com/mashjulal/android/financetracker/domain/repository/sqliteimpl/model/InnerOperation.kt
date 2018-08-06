@@ -24,8 +24,8 @@ abstract class InnerOperation : OperationModel {
         abstract class JointByCategory : OperationModel.SelectByCategoryModel<InnerOperation, InnerCategory, InnerAccount>
 
         val FACTORY: OperationModel.Factory<InnerOperation> =
-                OperationModel.Factory(OperationModel.Creator<InnerOperation> { id, dt, sum, currency, category, account, ratio ->
-                    AutoValue_InnerOperation(id, dt, sum, currency, category, account, ratio)
+                OperationModel.Factory(OperationModel.Creator<InnerOperation> { id, dt, sum, currency, category, account, ratio, repeator ->
+                    AutoValue_InnerOperation(id, dt, sum, currency, category, account, ratio, repeator)
                 })
 
         val SELECT_OPERATION_BY_ID: RowMapper<JointByIdInfo> =

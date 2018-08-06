@@ -3,6 +3,7 @@ package com.mashjulal.android.financetracker.domain.repository.sqliteimpl.utils
 import com.mashjulal.android.financetracker.domain.financialcalculations.Currency
 import com.mashjulal.android.financetracker.domain.financialcalculations.Money
 import com.mashjulal.android.financetracker.domain.financialcalculations.Operation
+import com.mashjulal.android.financetracker.domain.financialcalculations.Repeator
 import com.mashjulal.android.financetracker.domain.repository.sqliteimpl.model.InnerAccount
 import com.mashjulal.android.financetracker.domain.repository.sqliteimpl.model.InnerCategory
 import com.mashjulal.android.financetracker.domain.repository.sqliteimpl.model.InnerOperation
@@ -20,7 +21,9 @@ class OperationMapper {
                     Money(BigDecimal(innerOperation.sum()), Currency(innerOperation.currency())),
                     category,
                     java.util.Date(innerOperation.dt()),
-                    account
+                    account,
+                    innerOperation.ratio(),
+                    Repeator.getByString(innerOperation.repeator())
             )
 
         }

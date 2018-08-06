@@ -86,7 +86,8 @@ class OperationRepositoryImpl @Inject constructor(private val core: SQLiteCore)
                         amount.currency.rate,
                         category.title,
                         account.title,
-                        ratio)
+                        ratio,
+                        repeator.toString())
             }
             insertOperation.executeInsert()
         }
