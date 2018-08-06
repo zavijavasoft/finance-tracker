@@ -43,8 +43,10 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:2.0')
 
     implementation 'android.arch.persistence:db-framework:1.0.0'
 
@@ -74,4 +76,5 @@ dependencies {
 
     implementation "com.google.auto.value:auto-value-annotations:1.6.2"
     kapt "com.google.auto.value:auto-value:1.6.2"
+
 }
