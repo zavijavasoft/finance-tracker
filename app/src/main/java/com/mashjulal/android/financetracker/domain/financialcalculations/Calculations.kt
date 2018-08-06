@@ -4,18 +4,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import java.math.BigDecimal
 
-/**
- * Calculates total money amount after all operations.
- * @param operations list of operations
- * @return result of operations
- */
-fun calculateTotal(operations: List<Operation>, defaultCurrency: Currency): Money {
-    if (operations.isEmpty())
-        return Money(BigDecimal.ZERO, defaultCurrency)
-    return operations
-            .map { if (it.category.operationType == OperationType.OUTGOINGS) -it.amount else it.amount }
-            .reduce { acc, money -> acc + money }
-}
 
 
 fun calculateTotalEx(operations: List<Operation>, defaultCurrency: Currency,
