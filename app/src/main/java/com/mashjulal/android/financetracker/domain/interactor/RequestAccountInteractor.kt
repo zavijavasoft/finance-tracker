@@ -14,6 +14,6 @@ class RequestAccountInteractorImpl @Inject constructor(
 ) : RequestAccountInteractor {
 
     override fun execute(): Observable<List<Account>> = Observable.fromCallable {
-        accountRepository.getAll()
+        accountRepository.getAll().blockingGet()
     }
 }

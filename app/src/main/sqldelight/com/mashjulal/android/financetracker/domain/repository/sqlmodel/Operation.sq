@@ -1,0 +1,53 @@
+CREATE TABLE Operation(
+    id          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    dt          INTEGER NOT NULL UNIQUE,
+    sum         REAL NOT NULL,
+    currency    TEXT NOT NULL,
+    category    TEXT NOT NULL,
+    account     TEXT NOT NULL,
+    ratio       REAL NOT NULL,
+    repeator    TEXT NOT NULL
+
+);
+
+SelectAll:
+SELECT * FROM Operation AS O
+JOIN Category AS C ON O.category = C.category
+JOIN Account AS A ON O.account = A.title;
+
+SelectByAccount:
+SELECT * FROM Operation AS O
+JOIN Category AS C ON O.category = C.category
+JOIN Account AS A ON O.account = A.title
+WHERE O.account = ?;
+
+SelectByCategory:
+SELECT * FROM Operation AS O
+JOIN Category AS C ON O.category = C.category
+JOIN Account AS A ON O.account = A.title
+WHERE O.category = ?;
+
+SelectByDateRange:
+SELECT * FROM Operation AS O
+JOIN Category AS C ON O.category = C.category
+JOIN Account AS A ON O.account = A.title
+WHERE dt BETWEEN ? AND ?;
+
+InsertOperation:
+INSERT INTO Operation(dt, sum, currency, category, account, ratio, repeator)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+RemoveOperation:
+DELETE FROM Operation
+WHERE id = ?;
+
+UpdateOperation:
+UPDATE Operation SET category = ?, sum = ?
+WHERE id = ?;
+
+SelectOperationById:
+SELECT * FROM Operation AS O
+JOIN Category AS C ON O.category = C.category
+JOIN Account AS A ON O.account = A.title
+WHERE O.id = ?;
+

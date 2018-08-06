@@ -2,6 +2,7 @@ package com.mashjulal.android.financetracker.di
 
 import com.mashjulal.android.financetracker.domain.interactor.*
 import com.mashjulal.android.financetracker.domain.repository.*
+import com.mashjulal.android.financetracker.domain.repository.sqliteimpl.SQLiteCore
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -12,17 +13,19 @@ class InteractorModule {
     @Singleton
     @Provides
     fun providesAddOperationInteractor(balanceRepository: BalanceRepository,
+                                       accountRepository: AccountRepository,
                                        currencyRepository: CurrencyRepository,
                                        operationRepository: OperationRepository)
             : AddOperationInteractor = AddOperationInteractorImpl(balanceRepository,
-            currencyRepository, operationRepository)
+            accountRepository, currencyRepository, operationRepository)
 
     @Singleton
     @Provides
-    fun providesRefreshMainScreenDataInteractor(balanceRepository: BalanceRepository,
+    fun providesRefreshMainScreenDataInteractor(currencyRepository: CurrencyRepository,
+                                                balanceRepository: BalanceRepository,
                                                 operationRepository: OperationRepository)
             : RefreshMainScreenDataInteractor = RefreshMainScreenDataInteractorImpl(
-            balanceRepository, operationRepository)
+            currencyRepository, balanceRepository, operationRepository)
 
     @Singleton
     @Provides
@@ -36,4 +39,9 @@ class InteractorModule {
                                                categoryRepository: CategoryRepository)
             : GetDataForOptionEditInteractor =
             GetDataForOptionEditInteractorImpl(accountRepository, categoryRepository)
+
+    @Singleton
+    @Provides
+    fun prividesStorageConsistencyInteractor(sqlCore: SQLiteCore): StorageConsistencyInteractor =
+            StorageConsistanceInteracrorImpl(sqlCore)
 }

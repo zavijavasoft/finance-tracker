@@ -46,4 +46,15 @@
     <string name="error_operation_cant_be_added_to_all">Operation can\'t be add to all account.
         Please select other account.</string>
     <string name="account">Account</string>
+
+    <string name="predefined_other_incomings_category">Other Incomings</string>
+    <string name="predefined_other_outgoings_category">Other Outgoings</string>
+    <string name="predefined_from_other_account_category">From other acoount</string>
+    <string name="predefined_to_other_account_category">To other account</string>
+
+    <string name="predefined_account">Cash (RUB)</string>
+    <string name="radio_none_text">Do not repeat</string>
+    <string name="radio_weekly_text">Repeat weekly</string>
+    <string name="radio_monthly_text">Repeat monthly</string>
+
 </resources>
