@@ -20,6 +20,7 @@ import com.mashjulal.android.financetracker.domain.financialcalculations.Operati
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.balance.BalanceDelegateAdapter
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.IncomingsPreviewDelegateAdapter
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.OutgoingsPreviewDelegateAdapter
+import com.mashjulal.android.financetracker.presentation.utils.UITextDecorator
 import kotlinx.android.synthetic.main.fragment_main.*
 import javax.inject.Inject
 
@@ -63,7 +64,8 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
 
             override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?,
                                         position: Int, id: Long) {
-                val accountTitle = if (position > 0) spinnerAccounts.adapter.getItem(position) as String
+                val accountTitle = if (position > 0)
+                    UITextDecorator.mapUsableToSpecial(activity?.applicationContext, spinnerAccounts.adapter.getItem(position) as String)
                 else ""
                 refreshDataCards(accountTitle)
             }
@@ -137,7 +139,7 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
             listener?.onErrorOccurred(getString(R.string.error_operation_cant_be_added_to_all))
             return
         }
-        val accountName = spinnerAccounts.selectedItem as String
+        val accountName = UITextDecorator.mapUsableToSpecial(activity?.applicationContext, spinnerAccounts.selectedItem as String)
         listener?.onAddOperationClicked(operationType, accountName)
     }
 
@@ -147,7 +149,8 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
     }
 
     override fun setAccounts(data: List<Account>) {
-        val entries = listOf(getString(R.string.all_accounts)) + data.map { it.title }
+        val entries = listOf(getString(R.string.all_accounts)) +
+                data.map { UITextDecorator.mapSpecialToUsable(activity?.applicationContext, it.title) }
         val adapter = ArrayAdapter<String>(context,
                 R.layout.item_spinner_toolbar, entries)
         spinnerAccounts.adapter = adapter

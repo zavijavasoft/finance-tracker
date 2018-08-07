@@ -15,7 +15,15 @@
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable
+-dontwarn com.google.errorprone.annotations.*
+-dontwarn javax.servlet.**
+-dontwarn org.joda.time.**
+-dontwarn org.w3c.dom.**
+-ignorewarnings
 
+-keep class * {
+    public private *;
+}
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile

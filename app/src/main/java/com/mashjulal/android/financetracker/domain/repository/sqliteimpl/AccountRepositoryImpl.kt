@@ -14,9 +14,6 @@ import javax.inject.Inject
 
 class AccountRepositoryImpl @Inject constructor(val core: SQLiteCore) : AccountRepository {
 
-    companion object {
-        const val PREDEFINED_ACCOUNT = "Cash(RUB)"
-    }
 
     override fun getByName(title: String): Single<Account> {
         val statement: SqlDelightQuery = InnerAccount.FACTORY.SelectByAccount(title)

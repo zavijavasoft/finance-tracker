@@ -57,4 +57,6 @@
     <string name="radio_weekly_text">Repeat weekly</string>
     <string name="radio_monthly_text">Repeat monthly</string>
 
+    <string name="predefined_wrong">NAME?</string>
+
 </resources>

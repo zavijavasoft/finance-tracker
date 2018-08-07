@@ -6,6 +6,7 @@ import android.arch.persistence.db.framework.FrameworkSQLiteOpenHelperFactory
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import com.mashjulal.android.financetracker.domain.financialcalculations.OperationType
+import com.mashjulal.android.financetracker.domain.repository.sqliteimpl.utils.AccountMapper
 import com.mashjulal.android.financetracker.domain.repository.sqliteimpl.utils.CategoryMapper
 import com.mashjulal.android.financetracker.domain.repository.sqlmodel.AccountModel
 import com.mashjulal.android.financetracker.domain.repository.sqlmodel.CategoryModel
@@ -47,7 +48,7 @@ class SQLiteCore @Inject constructor(val app: Application,
         return Completable.fromCallable {
             val db = database.writableDatabase
             val insertAccount = AccountModel.InsertAccount(db)
-            insertAccount.bind(AccountRepositoryImpl.PREDEFINED_ACCOUNT, "RUB", 0.0, Date().time)
+            insertAccount.bind(AccountMapper.PREDEFINED_ACCOUNT, "RUB", 0.0, Date().time)
             try {
                 insertAccount.executeInsert()
             } catch (e: Exception) {

@@ -17,6 +17,7 @@ import com.mashjulal.android.financetracker.App
 import com.mashjulal.android.financetracker.R
 import com.mashjulal.android.financetracker.domain.financialcalculations.*
 import com.mashjulal.android.financetracker.domain.financialcalculations.Currency
+import com.mashjulal.android.financetracker.presentation.utils.UITextDecorator
 import kotlinx.android.synthetic.main.activity_edit_operation.*
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
@@ -82,7 +83,7 @@ class EditOperationActivity : MvpAppCompatActivity(), EditOperationPresenter.Vie
         operationType = intent.getStringExtra(ARG_OPERATION_TYPE)
         spinnerOperationType.setSelection(if (operationType == OperationType.INCOMINGS.name) 0 else 1)
 
-        accountName = intent.getStringExtra(ARG_OPERATION_ACCOUNT)
+        accountName = UITextDecorator.mapSpecialToUsable(applicationContext, intent.getStringExtra(ARG_OPERATION_ACCOUNT))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -108,9 +109,10 @@ class EditOperationActivity : MvpAppCompatActivity(), EditOperationPresenter.Vie
             val operationTypeRepr = spinnerOperationType.selectedItem as String
             val operationType = if (operationTypeRepr == getString(R.string.incomings)) OperationType.INCOMINGS
             else OperationType.OUTGOINGS
-            val account = Account(spinnerAccount.selectedItem as String)
+            val account = Account(UITextDecorator.mapUsableToSpecial(applicationContext, spinnerAccount.selectedItem as String))
+            val specialCategoryName = UITextDecorator.mapUsableToSpecial(applicationContext, spinnerCategory.selectedItem as String)
             val category = categories[operationType]
-                    ?.find { it.title == spinnerCategory.selectedItem as String }
+                    ?.find { it.title == specialCategoryName }
                     ?: throw Exception("Category can't be null")
             val operation = Operation(date.time, Money(amount, currency), category, date, account)
             presenter.saveOperation(operation)
@@ -145,7 +147,8 @@ class EditOperationActivity : MvpAppCompatActivity(), EditOperationPresenter.Vie
     private fun setAccounts(data: List<Account>) {
         this.accounts = data
         val adapter = ArrayAdapter(this,
-                android.R.layout.simple_spinner_dropdown_item, accounts.map { it.title })
+                android.R.layout.simple_spinner_dropdown_item,
+                accounts.map { UITextDecorator.mapSpecialToUsable(applicationContext, it.title) })
         spinnerAccount.adapter = adapter
         val position = adapter.getPosition(accountName)
         spinnerAccount.setSelection(position)
@@ -156,7 +159,7 @@ class EditOperationActivity : MvpAppCompatActivity(), EditOperationPresenter.Vie
         val operation = OperationType.valueOf(operationType)
         val adapter = ArrayAdapter(this,
                 android.R.layout.simple_spinner_dropdown_item, categories[operation].orEmpty()
-                .map { it.title })
+                .map { UITextDecorator.mapSpecialToUsable(applicationContext, it.title) })
         spinnerCategory.adapter = adapter
         spinnerCategory.setSelection(0)
     }
