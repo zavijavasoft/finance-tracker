@@ -3,22 +3,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/navItemMain"
-            android:checked="true"
-            android:icon="@drawable/ic_menu_main"
-            android:title="@string/nav_menu_home" />
+    <item
+        android:id="@+id/navItemMain"
+        android:checked="true"
+        android:icon="@drawable/ic_menu_main"
+        android:title="@string/nav_menu_home" />
 
+    <group
+        android:id="@+id/grp_accounts"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/accounts_sumbenu"
+            android:enabled="true"
+            android:icon="@drawable/ic_github"
+            android:title="@string/nav_menu_accounts"
+            android:titleCondensed="Areas"
+            android:visible="true">
+            <menu>
+                <item
+                    android:id="@+id/accounts_placeholder"
+                    android:title="Placeholder" />
+            </menu>
+        </item>
+    </group>
+
+    <group android:id="@+id/gpr_main">
+        <item
+            android:id="@+id/navItemSettings"
+            android:icon="@drawable/ic_menu_settings"
+            android:title="@string/nav_menu_settings" />
         <item
             android:id="@+id/navItemAbout"
             android:icon="@drawable/ic_info_black_24dp"
             android:title="@string/nav_menu_about" />
+
     </group>
-
-    <item
-        android:id="@+id/navItemSettings"
-        android:icon="@drawable/ic_menu_settings"
-        android:title="@string/nav_menu_settings" />
-
 </menu>

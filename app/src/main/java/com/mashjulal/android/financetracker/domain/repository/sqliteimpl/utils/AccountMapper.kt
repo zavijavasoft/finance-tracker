@@ -51,5 +51,6 @@ class AccountMapper {
 
         fun hasItId(@DrawableRes id: Int) = mapUsableToSpecial.keys.contains(id)
 
+        fun isUndeletable(special: String) = special in listOf(PREDEFINED_ACCOUNT)
     }
 }

@@ -34,6 +34,26 @@ import javax.inject.Inject
  */
 class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
 
+    companion object {
+        const val FRAGMENT_TAG = "MAIN_FRAGMENT_TAG"
+        private const val ACCOUNT_PARAM = "accountParam"
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         * @return A new instance of fragment MainFragment.
+         */
+        @JvmStatic
+        fun newInstance(accountName: String): MainFragment {
+            return MainFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ACCOUNT_PARAM, accountName)
+                }
+            }
+        }
+    }
+
+
     @Inject
     @InjectPresenter
     lateinit var presenter: MainPresenter
@@ -41,6 +61,7 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
     @ProvidePresenter
     fun providePresenter() = presenter
 
+    var accountName: String = ""
 
     private var listener: OnFragmentInteractionListener? = null
     private lateinit var spinnerAccounts: Spinner
@@ -67,9 +88,19 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
                 val accountTitle = if (position > 0)
                     UITextDecorator.mapUsableToSpecial(activity?.applicationContext, spinnerAccounts.adapter.getItem(position) as String)
                 else ""
-                refreshDataCards(accountTitle)
+//                refreshDataCards(accountTitle)
             }
         }
+        refreshDataCards(accountName)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        arguments?.let {
+            accountName = it.getString(ACCOUNT_PARAM)
+        }
+
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
@@ -140,7 +171,8 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
             return
         }
         val accountName = UITextDecorator.mapUsableToSpecial(activity?.applicationContext, spinnerAccounts.selectedItem as String)
-        listener?.onAddOperationClicked(operationType, accountName)
+        presenter.requestAddOperation(operationType.toString())
+        //listener?.onAddOperationClicked(operationType, accountName)
     }
 
     override fun refreshData(data: List<IComparableItem>) {
@@ -158,15 +190,6 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
         spinnerAccounts.setSelection(0)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @return A new instance of fragment MainFragment.
-         */
-        fun newInstance() = MainFragment()
-    }
 
     interface OnFragmentInteractionListener {
         fun onAddOperationClicked(operationType: OperationType, accountName: String)

@@ -19,6 +19,19 @@ import com.mashjulal.android.financetracker.R
  */
 class AboutFragment : Fragment() {
 
+    companion object {
+        const val FRAGMENT_TAG = "ABOUT_FRAGMENT_TAG"
+
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment.
+         *
+         * @return A new instance of fragment AboutFragment.
+         */
+        fun newInstance() = AboutFragment()
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupActionBar()
@@ -34,13 +47,4 @@ class AboutFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_about, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment.
-         *
-         * @return A new instance of fragment AboutFragment.
-         */
-        fun newInstance() = AboutFragment()
-    }
 }

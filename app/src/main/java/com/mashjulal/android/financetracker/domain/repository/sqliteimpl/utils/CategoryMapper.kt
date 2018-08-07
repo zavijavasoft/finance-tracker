@@ -65,11 +65,20 @@ class CategoryMapper {
         fun isSpecialTransferCategory(category: Category): Boolean =
                 category.title in listOf(PREDEFINED_FROM_ACCOUNT, PREDEFINED_TO_ACCOUNT)
 
+        fun isUndeletable(special: String) =
+                special in listOf(PREDEFINED_OTHER_INCOMINGS,
+                        PREDEFINED_OTHER_OUTGOINGS,
+                        PREDEFINED_FROM_ACCOUNT,
+                        PREDEFINED_TO_ACCOUNT)
+
+
         fun newCategory(innerCategory: InnerCategory): Category {
             return Category(
                     OperationType.getTypeByString(innerCategory.type()),
                     innerCategory.category(),
                     getRIdByString(innerCategory.subcategory()))
         }
+
+
     }
 }

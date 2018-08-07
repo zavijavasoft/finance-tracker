@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Finance Tracker</string>
-    <string name="title_activity_main">Главная</string>
-    <string name="nav_menu_home">Главная</string>
+    <string name="app_name">ФинаТра</string>
+    <string name="title_activity_main">ФинаТра</string>
+    <string name="nav_menu_home">Общий баланс</string>
     <string name="nav_menu_settings">Настройки</string>
+    <string name="nav_header_title">ФинаТра</string>
+    <string name="nav_header_desc">Navigation header</string>
 
     <string name="title_balance">Баланс</string>
     <string name="title_activity_settings">Настройки</string>
@@ -44,4 +46,5 @@
     <string name="radio_none_text">Одоразовая операция</string>
     <string name="radio_weekly_text">Повторять каждую неделю</string>
     <string name="radio_monthly_text">Повторять каждый месяц</string>
+    <string name="nav_menu_accounts">Счета</string>
 </resources>
