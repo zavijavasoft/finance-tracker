@@ -23,7 +23,7 @@ class EditOperationPresenter @Inject constructor(
 
 
     fun cancelOperation() {
-        router.navigate(MainRouter.CANCEL_OPERATION)
+        router.navigate(MainRouter.Command(MainRouter.CANCEL_OPERATION))
     }
 
     fun saveOperation(operation: Operation) {
@@ -31,7 +31,7 @@ class EditOperationPresenter @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    router.navigate(MainRouter.ACCEPT_OPERATION)
+                    router.navigate(MainRouter.Command(MainRouter.ACCEPT_OPERATION))
                 }
 
     }
@@ -46,7 +46,6 @@ class EditOperationPresenter @Inject constructor(
     }
 
     interface View : MvpView {
-        fun closeEditWindow()
         fun setData(accounts: List<Account>, categories: Map<OperationType, List<Category>>)
     }
 }

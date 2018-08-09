@@ -27,12 +27,14 @@ data class Currency(var rate: String) {
     companion object {
         val RUBLE = Currency("RUB")
         val DOLLAR = Currency("USD")
+        val EURO = Currency("EUR")
     }
 
     val symbol: String =
             when (rate) {
                 "RUB" -> "\u20BD"
                 "USD" -> "$"
+                "EUR" -> "\u20AC"
                 else -> "*"
             }
 }
@@ -44,7 +46,7 @@ enum class OperationType {
     INCOMINGS, OUTGOINGS;
 
     companion object {
-        fun getTypeByString(stringType: String): OperationType {
+        fun fromString(stringType: String): OperationType {
             return when (stringType) {
                 "INCOMINGS" -> INCOMINGS
                 "OUTGOINGS" -> OUTGOINGS

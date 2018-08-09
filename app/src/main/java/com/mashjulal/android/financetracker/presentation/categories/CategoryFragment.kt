@@ -1,4 +1,4 @@
-package com.mashjulal.android.financetracker.presentation.accounts
+package com.mashjulal.android.financetracker.presentation.categories
 
 
 import android.content.Context
@@ -13,21 +13,20 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.delegateadapter.delegate.CompositeDelegateAdapter
 import com.mashjulal.android.financetracker.App
 import com.mashjulal.android.financetracker.R
-import com.mashjulal.android.financetracker.domain.financialcalculations.Account
-import com.mashjulal.android.financetracker.domain.financialcalculations.Currency
+import com.mashjulal.android.financetracker.domain.financialcalculations.Category
 import com.mashjulal.android.financetracker.presentation.utils.UITextDecorator
-import kotlinx.android.synthetic.main.fragment_account.*
+import kotlinx.android.synthetic.main.fragment_category.*
 import javax.inject.Inject
 
-class AccountFragment : MvpAppCompatFragment(), AccountPresenter.View {
+class CategoryFragment : MvpAppCompatFragment(), CategoryPresenter.View {
 
 
     companion object {
 
-        const val FRAGMENT_TAG = "ACCOUNTS_FRAGMENT_TAG"
+        const val FRAGMENT_TAG = "CATEGORIES_FRAGMENT_TAG"
 
         @JvmStatic
-        fun newInstance() = AccountFragment()
+        fun newInstance() = CategoryFragment()
 
     }
 
@@ -37,7 +36,7 @@ class AccountFragment : MvpAppCompatFragment(), AccountPresenter.View {
 
     @Inject
     @InjectPresenter
-    lateinit var presenter: AccountPresenter
+    lateinit var presenter: CategoryPresenter
 
     @ProvidePresenter
     fun providePresenter() = presenter
@@ -51,11 +50,11 @@ class AccountFragment : MvpAppCompatFragment(), AccountPresenter.View {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_account, container, false)
+        return inflater.inflate(R.layout.fragment_category, container, false)
     }
 
-    fun setActionBar() {
-        (activity as AppCompatActivity).supportActionBar?.title = appContext.getString(R.string.accounts)
+    private fun setActionBar() {
+        (activity as AppCompatActivity).supportActionBar?.title = appContext.getString(R.string.categories)
 
     }
 
@@ -64,27 +63,26 @@ class AccountFragment : MvpAppCompatFragment(), AccountPresenter.View {
         super.onViewCreated(view, savedInstanceState)
         setActionBar()
 
-        val adapter = CompositeDelegateAdapter.Builder<AccountViewModel>()
-                .add(AccountDelegateAdapter())
+        val adapter = CompositeDelegateAdapter.Builder<CategoryViewModel>()
+                .add(CategoryDelegateAdapter())
                 .build()
-        rvAccounts.adapter = adapter
+        rvCategories.adapter = adapter
         presenter.needUpdate()
 
-        fabAccounts.setOnClickListener {
-            presenter.requestAddAccount()
+        fabCategories.setOnClickListener {
+            presenter.requestAddCategory()
         }
 
 
     }
 
-    override fun update(accounts: List<Account>) {
-        val adapter = rvAccounts.adapter as CompositeDelegateAdapter<AccountViewModel>
+    override fun update(accounts: List<Category>) {
+        val adapter = rvCategories.adapter as CompositeDelegateAdapter<CategoryViewModel>
         val data = accounts.map {
             val usable = UITextDecorator.mapSpecialToUsable(appContext, it.title)
             it.copy(title = usable)
-        }.map { AccountViewModel(it) }
+        }.map { CategoryViewModel(it) }
         adapter.swapData(data)
     }
 
-    override fun updateCurrencyList(curencies: List<Currency>) {}
 }

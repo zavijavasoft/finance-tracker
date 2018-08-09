@@ -20,6 +20,21 @@ class UITextDecorator {
         val specMap = mutableMapOf<String, Int>()
         val usableMap = mutableMapOf<Int, String>()
 
+        fun formActionBarTitle(context: Context?, special: String, addAppName: Boolean = false): String {
+            var usable = if (special.isEmpty()) {
+                context?.resources!!.getString(R.string.all_accounts)
+            } else {
+                mapSpecialToUsable(context, special)
+            }
+
+            val appName = if (addAppName) {
+                val name = context?.resources!!.getString(R.string.app_name)
+                "$name::"
+            } else {
+                ""
+            }
+            return "$appName$usable"
+        }
 
         fun mapSpecialToUsable(context: Context?, special: String): String {
 

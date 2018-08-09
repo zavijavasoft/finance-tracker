@@ -74,7 +74,7 @@ class CategoryMapper {
 
         fun newCategory(innerCategory: InnerCategory): Category {
             return Category(
-                    OperationType.getTypeByString(innerCategory.type()),
+                    OperationType.fromString(innerCategory.type()),
                     innerCategory.category(),
                     getRIdByString(innerCategory.subcategory()))
         }

@@ -7,6 +7,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 
 class AccountRepositoryStub : AccountRepository {
+    override fun insert(title: String, money: Money): Completable {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private val data: HashMap<Long, Account> = hashMapOf(
             1L to Account("John Smith"),
@@ -17,7 +20,7 @@ class AccountRepositoryStub : AccountRepository {
         return Single.fromCallable { data.map { it.value } }
     }
 
-    override fun getByName(title: String): Single<Account> {
+    override fun getByName(title: String): Single<List<Account>> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

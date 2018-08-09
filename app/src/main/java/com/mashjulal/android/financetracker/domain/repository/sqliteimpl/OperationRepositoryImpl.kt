@@ -66,12 +66,12 @@ class OperationRepositoryImpl @Inject constructor(private val core: SQLiteCore)
 
     override fun getByAccountAfter(account: Account, date: Date): Single<List<Operation>> {
         val statement: SqlDelightQuery = InnerOperation.FACTORY.SelectByAccount(account.title)
-        return core.database.createQuery(OperationModel.TABLE_NAME, statement.sql)
+        return core.database.createQuery(OperationModel.TABLE_NAME, statement.sql, account.title)
                 .mapToList { it -> InnerOperation.SELECT_OPS_BY_ACCOUNT.map(it) }
                 .map { it ->
                     it.map {
                         OperationMapper.newOperation(it.O(), it.C(), it.A())
-                    }.filter { it.date.after(date) }
+                    }
                 }
                 .take(1).single(listOf())
     }

@@ -31,7 +31,7 @@ class InteractorModule {
     @Provides
     fun providesRequestAccountInteractor(accountRepository: AccountRepository)
             : RequestAccountInteractor =
-            RequestAccountInteractorImpl(accountRepository)
+            DispatchAccountInteractor(accountRepository)
 
     @Singleton
     @Provides
@@ -44,4 +44,10 @@ class InteractorModule {
     @Provides
     fun prividesStorageConsistencyInteractor(sqlCore: SQLiteCore): StorageConsistencyInteractor =
             StorageConsistanceInteracrorImpl(sqlCore)
+
+    @Singleton
+    @Provides
+    fun prividesDispatchCategoryInteractor(categoryRepository: CategoryRepository): DispatchCategoryInteractor =
+            DispatchCategoryInteractorImpl(categoryRepository)
+
 }

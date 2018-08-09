@@ -14,8 +14,11 @@ import com.mashjulal.android.financetracker.App
 import com.mashjulal.android.financetracker.R
 import com.mashjulal.android.financetracker.domain.financialcalculations.Account
 import com.mashjulal.android.financetracker.domain.financialcalculations.OperationType
+import com.mashjulal.android.financetracker.presentation.accounts.AccountFragment
+import com.mashjulal.android.financetracker.presentation.accounts.AddAccountFragment
+import com.mashjulal.android.financetracker.presentation.categories.AddCategoryFragment
+import com.mashjulal.android.financetracker.presentation.categories.CategoryFragment
 import com.mashjulal.android.financetracker.presentation.editoperation.AddOperationFragment
-import com.mashjulal.android.financetracker.presentation.editoperation.EditOperationActivity
 import com.mashjulal.android.financetracker.presentation.main.AboutFragment
 import com.mashjulal.android.financetracker.presentation.main.MainFragment
 import com.mashjulal.android.financetracker.presentation.settings.SettingsActivity
@@ -73,7 +76,7 @@ class MainActivity : MvpAppCompatActivity(),
             // if navigation is visible close it
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            presenter.backPressed()
         }
     }
 
@@ -82,12 +85,22 @@ class MainActivity : MvpAppCompatActivity(),
         var fragment: Fragment? = null
         when (item.itemId) {
             R.id.navItemMain -> {
-                presenter.menuItemSelected(RootPresenter.MenuItemClass.ALLACCOUNTS, item.title.toString())
+                presenter.menuItemSelected(RootPresenter.MenuItemClass.ACCOUNT, "")
             }
             R.id.navItemSettings -> {
                 // open settings
                 startActivity(SettingsActivity.newIntent(this))
             }
+            R.id.navItemAccounts -> {
+                // open account list
+                presenter.menuItemSelected(RootPresenter.MenuItemClass.ACCOUNTS_LIST, "")
+            }
+
+            R.id.navItemCategories -> {
+                // open account list
+                presenter.menuItemSelected(RootPresenter.MenuItemClass.CATEGORIES_LIST, "")
+            }
+
             R.id.navItemAbout -> {
                 // open about page
                 presenter.menuItemSelected(RootPresenter.MenuItemClass.ABOUT, "")
@@ -111,7 +124,6 @@ class MainActivity : MvpAppCompatActivity(),
     }
 
     override fun onAddOperationClicked(operationType: OperationType, accountName: String) {
-        startActivity(EditOperationActivity.newIntent(this, operationType, accountName))
     }
 
     override fun onErrorOccurred(message: String) {
@@ -129,6 +141,10 @@ class MainActivity : MvpAppCompatActivity(),
 
         }
 
+    }
+
+    override fun defaultBackPressed() {
+        super.onBackPressed()
     }
 
     override fun navigateAddOperation(account: String, operationType: OperationType) {
@@ -165,7 +181,22 @@ class MainActivity : MvpAppCompatActivity(),
             val item = submenu.getItem(idx)
             item.setIcon(R.drawable.ic_github)
         }
-
-
     }
+
+    override fun navigateAccountsList() {
+        navigateSingleFragment(AccountFragment.FRAGMENT_TAG) { AccountFragment.newInstance() }
+    }
+
+    override fun navigateAddAccount() {
+        navigateSingleFragment(AddAccountFragment.FRAGMENT_TAG) { AddAccountFragment.newInstance() }
+    }
+
+    override fun navigateCategoriesList() {
+        navigateSingleFragment(CategoryFragment.FRAGMENT_TAG) { CategoryFragment.newInstance() }
+    }
+
+    override fun navigateAddCategory() {
+        navigateSingleFragment(AddCategoryFragment.FRAGMENT_TAG) { AddCategoryFragment.newInstance() }
+    }
+
 }

@@ -6,6 +6,8 @@
     <string name="nav_menu_settings">Настройки</string>
     <string name="nav_header_title">ФинаТра</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_menu_list_accounts">Список счетов</string>
+    <string name="nav_menu_list_categories">Список категорий</string>
 
     <string name="title_balance">Баланс</string>
     <string name="title_activity_settings">Настройки</string>
@@ -22,7 +24,11 @@
     <string name="nav_menu_about">О приложении</string>
     <string name="title_activity_about">О приложении</string>
     <string name="category_icon_image">Иконка категории</string>
-    <string name="create_new_operation">Создать новую операцию</string>
+    <string name="create_new_operation">Новая операция</string>
+    <string name="create_new_account">Создать счет</string>
+    <string name="create_new_category">Создать категорию</string>
+    <string name="category_type">Тип операций по категории</string>
+
     <string name="show_more">Ещё</string>
     <string name="done">Завершить</string>
     <string name="currency">Валюта</string>
@@ -32,8 +38,9 @@
     <string name="incomings">Доходы</string>
     <string name="outgoings">Расходы</string>
     <string name="title_activity_edit_operation">Операция…</string>
-    <string name="accounts">Аккаунты</string>
-    <string name="all_accounts">Все</string>
+    <string name="accounts">Список счетов</string>
+    <string name="categories">Список категорий</string>
+    <string name="all_accounts">Общий баланс</string>
     <string name="account">Счет</string>
     <string name="error_operation_cant_be_added_to_all">Невозможно добавить операцию для общего счета. Пожайлуста, выберите другой счет.</string>
 

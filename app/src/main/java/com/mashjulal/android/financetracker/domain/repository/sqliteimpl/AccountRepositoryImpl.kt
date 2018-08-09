@@ -15,12 +15,15 @@ import javax.inject.Inject
 class AccountRepositoryImpl @Inject constructor(val core: SQLiteCore) : AccountRepository {
 
 
-    override fun getByName(title: String): Single<Account> {
+    override fun getByName(title: String): Single<List<Account>> {
         val statement: SqlDelightQuery = InnerAccount.FACTORY.SelectByAccount(title)
-        return core.database.createQuery(AccountModel.TABLE_NAME, statement.sql)
-                .mapToOne { it -> InnerAccount.ALL_ACCOUNTS_MAPPER.map(it) }
-                .map { it -> AccountMapper.newAccount(it) }
-                .single(Account())
+        return core.database.createQuery(AccountModel.TABLE_NAME, statement.sql, title)
+                .mapToList { it -> InnerAccount.SELECT_ACCOUNT_BY_ACCOUNT.map(it) }
+                .map { it ->
+                    it.map { it ->
+                        AccountMapper.newAccount(it)
+                    }.toList()
+                }.take(1).single(listOf())
     }
 
 
@@ -41,6 +44,15 @@ class AccountRepositoryImpl @Inject constructor(val core: SQLiteCore) : AccountR
             val updateAccount = AccountModel.UpdateAccount(db)
             updateAccount.bind(money.amount.toDouble(), Date().time, title)
             updateAccount.executeUpdateDelete()
+        }
+    }
+
+    override fun insert(title: String, money: Money): Completable {
+        return Completable.fromCallable {
+            val db = core.database.writableDatabase
+            val insertAccount = AccountModel.InsertAccount(db)
+            insertAccount.bind(title, money.currency.rate, 0.0, Date().time)
+            insertAccount.executeInsert()
         }
     }
 

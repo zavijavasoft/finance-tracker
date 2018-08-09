@@ -3,8 +3,10 @@ package com.mashjulal.android.financetracker.di
 import android.content.Context
 import com.mashjulal.android.financetracker.App
 import com.mashjulal.android.financetracker.presentation.accounts.AccountFragment
+import com.mashjulal.android.financetracker.presentation.accounts.AddAccountFragment
+import com.mashjulal.android.financetracker.presentation.categories.AddCategoryFragment
+import com.mashjulal.android.financetracker.presentation.categories.CategoryFragment
 import com.mashjulal.android.financetracker.presentation.editoperation.AddOperationFragment
-import com.mashjulal.android.financetracker.presentation.editoperation.EditOperationActivity
 import com.mashjulal.android.financetracker.presentation.main.MainFragment
 import com.mashjulal.android.financetracker.presentation.root.MainActivity
 import dagger.BindsInstance
@@ -30,7 +32,9 @@ interface AppComponent {
     fun inject(app: App)
     fun inject(fragment: MainFragment)
     fun inject(fragment: AccountFragment)
+    fun inject(fragment: CategoryFragment)
     fun inject(fragment: AddOperationFragment)
+    fun inject(fragment: AddAccountFragment)
+    fun inject(fragment: AddCategoryFragment)
     fun inject(mainActivity: MainActivity)
-    fun inject(editOperationActivity: EditOperationActivity)
 }

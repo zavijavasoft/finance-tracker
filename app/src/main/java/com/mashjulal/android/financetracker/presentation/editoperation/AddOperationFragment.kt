@@ -4,6 +4,7 @@ package com.mashjulal.android.financetracker.presentation.editoperation
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -42,6 +43,9 @@ class AddOperationFragment : MvpAppCompatFragment(), EditOperationPresenter.View
 
 
     @Inject
+    lateinit var appContext: Context
+
+    @Inject
     @InjectPresenter
     lateinit var presenter: EditOperationPresenter
 
@@ -63,8 +67,10 @@ class AddOperationFragment : MvpAppCompatFragment(), EditOperationPresenter.View
         }
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setActionBar()
         setHasOptionsMenu(true)
         initLayout()
     }
@@ -92,6 +98,13 @@ class AddOperationFragment : MvpAppCompatFragment(), EditOperationPresenter.View
         return super.onOptionsItemSelected(item)
     }
 
+    private fun setActionBar() {
+        (activity as AppCompatActivity).supportActionBar?.title =
+                UITextDecorator.formActionBarTitle(appContext,
+                        appContext.getString(R.string.create_new_operation))
+
+    }
+
 
     private fun showDateDialog() {
         val day = calendar.get(Calendar.DAY_OF_MONTH)
@@ -102,7 +115,7 @@ class AddOperationFragment : MvpAppCompatFragment(), EditOperationPresenter.View
             calendar.set(y, m, d)
             showSelectedDate()
         }
-        val dpk = DatePickerDialog(activity?.applicationContext, dateChangeCallback, year, month, day)
+        val dpk = DatePickerDialog(appContext, dateChangeCallback, year, month, day)
         dpk.show()
     }
 
@@ -144,9 +157,6 @@ class AddOperationFragment : MvpAppCompatFragment(), EditOperationPresenter.View
         }
     }
 
-    override fun closeEditWindow() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     override fun setData(accounts: List<Account>, categories: Map<OperationType, List<Category>>) {
         setOperationTypes()
@@ -164,9 +174,9 @@ class AddOperationFragment : MvpAppCompatFragment(), EditOperationPresenter.View
                 val operationType = if (operation == getString(R.string.incomings)) OperationType.INCOMINGS
                 else OperationType.OUTGOINGS
 
-                spinnerCategory.adapter = ArrayAdapter(activity?.applicationContext,
+                spinnerCategory.adapter = ArrayAdapter(appContext,
                         android.R.layout.simple_spinner_dropdown_item,
-                        categories[operationType]?.map { it.title })
+                        categories[operationType]?.map { UITextDecorator.mapSpecialToUsable(appContext, it.title) }!!.toMutableList())
                 spinnerCategory.setSelection(0)
             }
 
@@ -175,21 +185,25 @@ class AddOperationFragment : MvpAppCompatFragment(), EditOperationPresenter.View
 
     private fun setAccounts(data: List<Account>) {
         this.accounts = data
-        val adapter = ArrayAdapter(activity?.applicationContext,
+        val adapter = ArrayAdapter(appContext,
                 android.R.layout.simple_spinner_dropdown_item,
-                accounts.map { UITextDecorator.mapSpecialToUsable(activity?.applicationContext, it.title) })
+                accounts.map { UITextDecorator.mapSpecialToUsable(appContext, it.title) })
         spinnerAccount.adapter = adapter
-        val position = adapter.getPosition(accountName)
+        adapter.notifyDataSetChanged()
+        val position = adapter.getPosition(UITextDecorator.mapSpecialToUsable(appContext, accountName))
         spinnerAccount.setSelection(position)
     }
 
     private fun setCategories(categories: Map<OperationType, List<Category>>) {
+
         this.categories = categories
         val operation = OperationType.valueOf(operationType)
-        val adapter = ArrayAdapter(activity?.applicationContext,
-                android.R.layout.simple_spinner_dropdown_item, categories[operation].orEmpty()
-                .map { UITextDecorator.mapSpecialToUsable(activity?.applicationContext, it.title) })
+        val adapter = ArrayAdapter(appContext,
+                android.R.layout.simple_spinner_item, categories[operation].orEmpty()
+                .map { UITextDecorator.mapSpecialToUsable(appContext, it.title) })
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCategory.adapter = adapter
+        adapter.notifyDataSetChanged()
         spinnerCategory.setSelection(0)
     }
 

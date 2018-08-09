@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.accounts.AccountFragment">
+    tools:context=".presentation.categories.CategoryFragment">
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvAccounts"
+        android:id="@+id/rvCategories"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabAccounts"
+        android:id="@+id/fabCategories"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"

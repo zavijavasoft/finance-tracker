@@ -51,14 +51,9 @@ class SQLiteCore @Inject constructor(val app: Application,
             insertAccount.bind(AccountMapper.PREDEFINED_ACCOUNT, "RUB", 0.0, Date().time)
             try {
                 insertAccount.executeInsert()
-            } catch (e: Exception) {
-                if (e !is SQLiteConstraintException)
-                    throw e
+            } catch (e: SQLiteConstraintException) {
                 Log.d("Unique constraint ex", e.localizedMessage)
-            } finally {
-
             }
-
         }
     }
 

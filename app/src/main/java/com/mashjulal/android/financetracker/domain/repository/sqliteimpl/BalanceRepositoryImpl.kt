@@ -17,12 +17,13 @@ class BalanceRepositoryImpl @Inject constructor(val core: SQLiteCore)
 
     override fun getLastByAccount(account: Account): Single<List<Balance>> {
         val statement: SqlDelightQuery = InnerAccount.FACTORY.SelectByAccount(account.title)
-        val query = core.database.createQuery(statement.tables, statement.sql, account.title)
-        return query.mapToOne { it -> InnerAccount.SELECT_ACCOUNT_BY_ACCOUNT.map(it) }
+        return core.database.createQuery(AccountModel.TABLE_NAME, statement.sql, account.title)
+                .mapToList { it -> InnerAccount.SELECT_ACCOUNT_BY_ACCOUNT.map(it) }
                 .map { it ->
-                    listOf(BalanceMapper.newBalance(AccountMapper.newAccount(it)))
-                }
-                .take(1).single(listOf())
+                    it.map { it ->
+                        BalanceMapper.newBalance(AccountMapper.newAccount(it))
+                    }.toList()
+                }.take(1).single(listOf())
     }
 
     override fun getLastByAll(): Single<List<Balance>> {

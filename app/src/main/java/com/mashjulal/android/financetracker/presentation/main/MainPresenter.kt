@@ -28,6 +28,23 @@ class MainPresenter @Inject constructor(
 
     var justStarted = true
 
+
+    val subscription = router.bus
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                when (it.command) {
+                    MainRouter.BALANCE_ACCOUNT_CHANGED -> {
+                        refreshData(it.param1)
+                    }
+
+
+                }
+            }
+
+
+
+
     fun initialCheck() {
         if (justStarted) {
             justStarted = false
@@ -47,7 +64,7 @@ class MainPresenter @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { data ->
-                    viewState.refreshData(data)
+                    viewState.refreshData("", data)
                 }
     }
 
@@ -61,26 +78,30 @@ class MainPresenter @Inject constructor(
     }
 
     fun refreshData(accountTitle: String) {
+        if (accountTitle.isEmpty()) {
+            refreshData()
+            return
+        }
         val account = Account(accountTitle)
         refreshInteractor.execute(account)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { data ->
-                    viewState.refreshData(data)
+                    viewState.refreshData(accountTitle, data)
                 }
     }
 
     fun requestAddOperation(operationType: String) {
-        val type = OperationType.getTypeByString(operationType)
+        val type = OperationType.fromString(operationType)
         if (type == OperationType.INCOMINGS)
-            router.navigate(MainRouter.REQUEST_ADD_INCOMING_OPERATION)
+            router.navigate(MainRouter.Command(MainRouter.REQUEST_ADD_INCOMING_OPERATION))
         else
-            router.navigate(MainRouter.REQUEST_ADD_OUTGOING_OPERATION)
+            router.navigate(MainRouter.Command(MainRouter.REQUEST_ADD_OUTGOING_OPERATION))
     }
 
     interface View : MvpView {
 
-        fun refreshData(data: List<IComparableItem>)
+        fun refreshData(accountTitle: String, data: List<IComparableItem>)
         @StateStrategyType(SkipStrategy::class)
         fun setAccounts(data: List<Account>)
     }

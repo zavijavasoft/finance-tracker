@@ -1,6 +1,7 @@
 package com.mashjulal.android.financetracker.domain.repository.sqliteimpl
 
 import com.mashjulal.android.financetracker.data.currencyconvertapi.CurrencyService
+import com.mashjulal.android.financetracker.domain.financialcalculations.Currency
 import com.mashjulal.android.financetracker.domain.repository.CurrencyRepository
 import io.reactivex.Single
 import java.math.BigDecimal
@@ -37,5 +38,9 @@ class CurrencyRepositoryImpl @Inject constructor(
         return currencyService.getRate(q)
                 .doOnSuccess { map[q] = Exchange(from, to, it.rate, Date()) }
                 .map { it.rate }
+    }
+
+    override fun getCurrencyList(): Single<List<Currency>> {
+        return Single.just(listOf(Currency.DOLLAR, Currency.RUBLE, Currency.EURO))
     }
 }

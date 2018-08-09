@@ -11,4 +11,5 @@ interface CategoryRepository {
     fun remove(category: Category): Completable
     fun getAll(): Single<List<Category>>
     fun getByOperationType(operationType: OperationType): Single<List<Category>>
+    fun getByTitle(title: String): Single<List<Category>>
 }

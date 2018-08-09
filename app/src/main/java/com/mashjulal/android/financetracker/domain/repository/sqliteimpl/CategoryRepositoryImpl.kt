@@ -26,6 +26,16 @@ class CategoryRepositoryImpl @Inject constructor(val core: SQLiteCore) : Categor
                 }.take(1).single(listOf())
     }
 
+    override fun getByTitle(title: String): Single<List<Category>> {
+        val statement: SqlDelightQuery = InnerCategory.FACTORY.SelectCategoryByCategory(title)
+        return core.database.createQuery(CategoryModel.TABLE_NAME, statement.sql, title)
+                .mapToList { it -> InnerCategory.SELECT_CATEGORY_BY_CATEGORY.map(it) }
+                .map { it ->
+                    it.map { it -> CategoryMapper.newCategory(it) }.toList()
+                }.take(1).single(listOf())
+    }
+
+
     override fun getByOperationType(operationType: OperationType): Single<List<Category>> {
         val statement = InnerCategory.FACTORY.SelectCategoryByType(operationType.toString())
         return core.database.createQuery(CategoryModel.TABLE_NAME, statement.sql)
@@ -41,8 +51,9 @@ class CategoryRepositoryImpl @Inject constructor(val core: SQLiteCore) : Categor
         return Completable.create {
             val db = core.database.writableDatabase
             val insertCategory = CategoryModel.InsertCategory(db)
-            insertCategory.bind(category.title, category.operationType.toString(),
-                    CategoryMapper.getStringByRId(category.imageRes))
+            insertCategory.bind(category.title,
+                    CategoryMapper.getStringByRId(category.imageRes),
+                    category.operationType.toString())
             insertCategory.executeInsert()
         }
     }

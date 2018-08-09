@@ -8,6 +8,7 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -19,7 +20,9 @@ import com.mashjulal.android.financetracker.domain.financialcalculations.Account
 import com.mashjulal.android.financetracker.domain.financialcalculations.OperationType
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.balance.BalanceDelegateAdapter
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.IncomingsPreviewDelegateAdapter
+import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.IncomingsPreviewViewModel
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.OutgoingsPreviewDelegateAdapter
+import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.OutgoingsPreviewViewModel
 import com.mashjulal.android.financetracker.presentation.utils.UITextDecorator
 import kotlinx.android.synthetic.main.fragment_main.*
 import javax.inject.Inject
@@ -33,6 +36,9 @@ import javax.inject.Inject
  *
  */
 class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
+
+    private val MAX_ITEM_IN_LIST_COUNT = 5
+
 
     companion object {
         const val FRAGMENT_TAG = "MAIN_FRAGMENT_TAG"
@@ -53,6 +59,8 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
         }
     }
 
+    @Inject
+    lateinit var appContext: Context
 
     @Inject
     @InjectPresenter
@@ -67,8 +75,9 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
     private lateinit var spinnerAccounts: Spinner
 
     private fun setActionBar() {
-        setHasOptionsMenu(true)
-        (activity as AppCompatActivity).supportActionBar?.title = ""
+        (activity as AppCompatActivity).supportActionBar?.title =
+                UITextDecorator.formActionBarTitle(appContext, accountName, true)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -91,7 +100,6 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
 //                refreshDataCards(accountTitle)
             }
         }
-        refreshDataCards(accountName)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,7 +143,7 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
 
     override fun onResume() {
         super.onResume()
-        refreshDataCards()
+        refreshDataCards(accountName)
     }
 
     override fun onDetach() {
@@ -166,18 +174,37 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
     }
 
     private fun callAddOperation(operationType: OperationType) {
-        if (spinnerAccounts.selectedItemPosition == 0) {
-            listener?.onErrorOccurred(getString(R.string.error_operation_cant_be_added_to_all))
+        if (accountName.isEmpty()) {
+            Toast.makeText(activity?.applicationContext,
+                    R.string.error_operation_cant_be_added_to_all, Toast.LENGTH_SHORT).show()
             return
         }
-        val accountName = UITextDecorator.mapUsableToSpecial(activity?.applicationContext, spinnerAccounts.selectedItem as String)
         presenter.requestAddOperation(operationType.toString())
-        //listener?.onAddOperationClicked(operationType, accountName)
     }
 
-    override fun refreshData(data: List<IComparableItem>) {
+    override fun refreshData(accountTitle: String, data: List<IComparableItem>) {
+        accountName = accountTitle
+        setActionBar()
+        val balance = data[0]
+        val incomings = data[1] as IncomingsPreviewViewModel
+        val incOps = incomings.operations.map {
+            it.copy(category = it.category.copy(title = UITextDecorator.mapSpecialToUsable(appContext, it.category.title)))
+        }
+        val outgoings = data[2] as OutgoingsPreviewViewModel
+        val outOps = outgoings.operations.map {
+            it.copy(category = it.category.copy(title = UITextDecorator.mapSpecialToUsable(appContext, it.category.title)))
+        }
+
+
+        val newIncomings = IncomingsPreviewViewModel(incomings.balance,
+                incOps.subList(0, Math.min(MAX_ITEM_IN_LIST_COUNT, incOps.size)),
+                incOps.size > MAX_ITEM_IN_LIST_COUNT)
+        val newOutgoings = OutgoingsPreviewViewModel(outgoings.balance,
+                outOps.subList(0, Math.min(MAX_ITEM_IN_LIST_COUNT, outOps.size)),
+                outOps.size > MAX_ITEM_IN_LIST_COUNT)
+
         val adapter = rvMenu.adapter as DiffUtilCompositeAdapter
-        adapter.swapData(data)
+        adapter.swapData(listOf(balance, newIncomings, newOutgoings))
     }
 
     override fun setAccounts(data: List<Account>) {
