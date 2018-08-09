@@ -10,10 +10,11 @@ import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
-class NetworkModule(private val baseUrl: String) {
+class NetworkModule {
 
     @Singleton
     @Provides
@@ -24,7 +25,7 @@ class NetworkModule(private val baseUrl: String) {
 
     @Singleton
     @Provides
-    fun providesRetrofit(gson: Gson): Retrofit {
+    fun providesRetrofit(gson: Gson, @Named("base_url") baseUrl: String): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create(gson))
@@ -37,4 +38,7 @@ class NetworkModule(private val baseUrl: String) {
     fun providesCurrencyService(retrofit: Retrofit): CurrencyService =
             retrofit.create(CurrencyService::class.java)
 
+    @Provides
+    @Named("base_url")
+    fun provideBaseUrl() = " https://free.currencyconverterapi.com/"
 }

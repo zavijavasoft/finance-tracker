@@ -4,6 +4,8 @@ import com.mashjulal.android.financetracker.R
 import com.mashjulal.android.financetracker.domain.financialcalculations.Category
 import com.mashjulal.android.financetracker.domain.financialcalculations.OperationType
 import com.mashjulal.android.financetracker.domain.repository.CategoryRepository
+import io.reactivex.Completable
+import io.reactivex.Single
 
 class CategoryRepositoryStub : CategoryRepository {
 
@@ -17,11 +19,22 @@ class CategoryRepositoryStub : CategoryRepository {
             6L to Category(OperationType.OUTGOINGS, "Shopping", R.drawable.ic_shopping_red_24dp)
     )
 
-    override fun getAll(): List<Category> {
-        return data.map { it.value }
+    override fun getAll(): Single<List<Category>> {
+        return Single.fromCallable { data.map { it.value } }
     }
 
-    override fun getByOperationType(operationType: OperationType): List<Category> {
-        return data.map { it.value }.filter { it.operationType == operationType }
+    override fun getByOperationType(operationType: OperationType): Single<List<Category>> {
+        return Single.fromCallable {
+            data.map { it.value }.filter { it.operationType == operationType }
+        }
     }
+
+    override fun create(category: Category): Completable {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun remove(category: Category): Completable {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
 }

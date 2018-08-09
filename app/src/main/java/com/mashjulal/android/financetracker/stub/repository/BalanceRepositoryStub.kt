@@ -5,6 +5,7 @@ import com.mashjulal.android.financetracker.domain.financialcalculations.Balance
 import com.mashjulal.android.financetracker.domain.financialcalculations.Currency
 import com.mashjulal.android.financetracker.domain.financialcalculations.Money
 import com.mashjulal.android.financetracker.domain.repository.BalanceRepository
+import io.reactivex.Single
 import java.math.BigDecimal
 import java.util.*
 
@@ -19,19 +20,19 @@ class BalanceRepositoryStub : BalanceRepository {
             2 to Balance(Account("John Smith Credit Card"), Money(BigDecimal.ZERO, Currency.RUBLE), tomorrow)
     )
 
-    override fun getByAccount(account: Account): List<Balance> {
-        return data.asSequence().map { it.value }.filter { it.account == account }.toList()
+    override fun getByAccount(account: Account): Single<List<Balance>> {
+        return Single.just(data.asSequence().map { it.value }.filter { it.account == account }.toList())
     }
 
-    override fun getByAccountAfter(account: Account, date: Date): List<Balance> {
-        return data.asSequence().map { it.value }.filter { it.account == account && it.date.after(date) }.toList()
+    override fun getByAccountAfter(account: Account, date: Date): Single<List<Balance>> {
+        return Single.just(data.asSequence().map { it.value }.filter { it.account == account && it.date.after(date) }.toList())
     }
 
-    override fun getLastByAccount(account: Account): Balance {
-        return data.asSequence().map { it.value }.last { it.account == account }
+    override fun getLastByAccount(account: Account): Single<List<Balance>> {
+        return Single.just(listOf(data.asSequence().map { it.value }.last { it.account == account }))
     }
 
-    override fun getLastByAll(): List<Balance> {
-        return data.asSequence().map { it.value }.groupBy { it.account }.map { it.value.last() }
+    override fun getLastByAll(): Single<List<Balance>> {
+        return Single.just(data.asSequence().map { it.value }.groupBy { it.account }.map { it.value.last() })
     }
 }

@@ -33,9 +33,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         navView.setNavigationItemSelectedListener(this)
 
-        // Show main page
-        val fragment = MainFragment.newInstance()
-        supportFragmentManager.beginTransaction().add(R.id.container, fragment).commit()
+        if (savedInstanceState == null) {
+            val fragment = MainFragment.newInstance()
+            supportFragmentManager.beginTransaction().add(R.id.container, fragment).commit()
+        }
     }
 
     override fun onBackPressed() {

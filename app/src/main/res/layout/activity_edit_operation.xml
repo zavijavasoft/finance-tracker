@@ -20,8 +20,8 @@
 
     <Spinner
         android:id="@+id/spinnerAccount"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="171dp"
+        android:layout_height="43dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/textView5"
@@ -29,8 +29,8 @@
 
     <Spinner
         android:id="@+id/spinnerCategory"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="126dp"
+        android:layout_height="44dp"
         app:layout_constraintStart_toStartOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -43,8 +43,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
         android:ems="10"
-        android:enabled="false"
-        android:inputType="none"
+        android:enabled="true"
+        android:inputType="numberDecimal"
         android:textAlignment="viewEnd"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/spinnerCurrency"
@@ -131,17 +131,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSelectDate" />
 
-    <com.davidmiguel.numberkeyboard.NumberKeyboard
-        android:id="@+id/numberKeyboard"
+    <RadioGroup
+        android:id="@+id/radioGroup"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="16dp"
-        android:layout_marginTop="8dp"
-        app:keyboardType="decimal"
+        android:layout_height="150dp"
+        android:layout_marginLeft="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toEndOf="@id/spinnerAccount"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerAccount" />
+        app:layout_constraintTop_toBottomOf="@id/spinnerCategory"
+        app:layout_constraintVertical_bias="0.111">
+
+        <RadioButton
+            android:id="@+id/radio_none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/radio_none_text" />
+
+        <RadioButton
+            android:id="@+id/radio_weekly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/radio_weekly_text" />
+
+        <RadioButton
+            android:id="@+id/radio_monthly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/radio_monthly_text" />
+
+    </RadioGroup>
+
 
 </android.support.constraint.ConstraintLayout>

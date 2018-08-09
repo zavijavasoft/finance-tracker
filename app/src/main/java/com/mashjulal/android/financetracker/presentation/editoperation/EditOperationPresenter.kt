@@ -1,5 +1,8 @@
 package com.mashjulal.android.financetracker.presentation.editoperation
 
+import com.arellomobile.mvp.InjectViewState
+import com.arellomobile.mvp.MvpPresenter
+import com.arellomobile.mvp.MvpView
 import com.mashjulal.android.financetracker.domain.financialcalculations.Account
 import com.mashjulal.android.financetracker.domain.financialcalculations.Category
 import com.mashjulal.android.financetracker.domain.financialcalculations.Operation
@@ -10,27 +13,19 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
+@InjectViewState
 class EditOperationPresenter @Inject constructor(
         private val operationInteractor: AddOperationInteractor,
         private val getDataForOptionEditInteractor: GetDataForOptionEditInteractor
-) {
+) : MvpPresenter<EditOperationPresenter.View>() {
 
-    private var view: View? = null
-
-    fun attachView(view: View) {
-        this.view = view
-    }
-
-    fun detachView() {
-        this.view = null
-    }
 
     fun saveOperation(operation: Operation) {
         operationInteractor.execute(operation)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    view?.closeEditWindow()
+                    viewState.closeEditWindow()
                 }
     }
 
@@ -39,11 +34,11 @@ class EditOperationPresenter @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { data ->
-                    view?.setData(data.first, data.second)
+                    viewState.setData(data.first, data.second)
                 }
     }
 
-    interface View {
+    interface View : MvpView {
         fun closeEditWindow()
         fun setData(accounts: List<Account>, categories: Map<OperationType, List<Category>>)
     }
