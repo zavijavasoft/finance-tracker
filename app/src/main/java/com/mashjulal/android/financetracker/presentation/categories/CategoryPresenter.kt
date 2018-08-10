@@ -27,12 +27,12 @@ class CategoryPresenter @Inject constructor(private val router: MainRouter,
 
     fun updateCategory(title: String, operationType: String, @DrawableRes iconId: Int) {
         dispatchCategoryInteractor.updateCategory(title, operationType, iconId).subscribe {
-            router.navigate(MainRouter.Command(MainRouter.CATEGORY_REPLACED))
+            router.navigate(MainRouter.Command(MainRouter.TO_SINGLE_CATEGORY_LIST))
         }
     }
 
     fun requestAddCategory() {
-        router.navigate(MainRouter.Command(MainRouter.REQUEST_ADD_CATEGORY))
+        router.navigate(MainRouter.Command(MainRouter.TO_SINGLE_ADD_CATEGORY))
     }
 
 

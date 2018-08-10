@@ -9,6 +9,7 @@
     <string name="nav_menu_settings">Settings</string>
     <string name="nav_menu_list_accounts">Accounts list</string>
     <string name="nav_menu_list_categories">Categories list</string>
+    <string name="nav_menu_list_accounts_and_categories">Счета и категории</string>
 
 
     <string name="title_balance">Balance</string>
@@ -70,5 +71,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="nav_menu_accounts">Accounts</string>
+
+    <string name="chart_title">Report For Period</string>
 
 </resources>

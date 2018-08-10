@@ -10,4 +10,14 @@
         <item>Доходы</item>
         <item>Расходы</item>
     </string-array>
+
+
+    <string-array name="chart_periods">
+        <item>Неделя</item>
+        <item>Две недели</item>
+        <item>Месяц</item>
+    </string-array>
+
+
 </resources>
+

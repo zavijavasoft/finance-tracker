@@ -1,6 +1,5 @@
 package com.mashjulal.android.financetracker.presentation.main
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.arellomobile.mvp.MvpView
@@ -8,7 +7,6 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.delegateadapter.delegate.diff.IComparableItem
 import com.mashjulal.android.financetracker.domain.financialcalculations.Account
-import com.mashjulal.android.financetracker.domain.financialcalculations.OperationType
 import com.mashjulal.android.financetracker.domain.interactor.RefreshMainScreenDataInteractor
 import com.mashjulal.android.financetracker.domain.interactor.RequestAccountInteractor
 import com.mashjulal.android.financetracker.domain.interactor.StorageConsistencyInteractor
@@ -26,44 +24,27 @@ class MainPresenter @Inject constructor(
 ) : MvpPresenter<MainPresenter.View>() {
 
 
-    var justStarted = true
-
 
     val subscription = router.bus
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 when (it.command) {
-                    MainRouter.BALANCE_ACCOUNT_CHANGED -> {
+                    MainRouter.TO_SINGLE_BALANCE,
+                    MainRouter.TO_TWIN_BALANCE -> {
                         refreshData(it.param1)
                     }
-
-
                 }
             }
 
-
-
-
-    fun initialCheck() {
-        if (justStarted) {
-            justStarted = false
-            storageConsistencyInteractor.check()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        Log.d("Записи корректны", "")
-                    }, { e ->
-                        Log.d("Ошибка уникальности", e.localizedMessage, e)
-                    })
-        }
-    }
 
     fun refreshData() {
         refreshInteractor.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { data ->
+
+
                     viewState.refreshData("", data)
                 }
     }
@@ -92,11 +73,7 @@ class MainPresenter @Inject constructor(
     }
 
     fun requestAddOperation(operationType: String) {
-        val type = OperationType.fromString(operationType)
-        if (type == OperationType.INCOMINGS)
-            router.navigate(MainRouter.Command(MainRouter.REQUEST_ADD_INCOMING_OPERATION))
-        else
-            router.navigate(MainRouter.Command(MainRouter.REQUEST_ADD_OUTGOING_OPERATION))
+        router.navigate(MainRouter.Command(MainRouter.TO_SINGLE_ADD_OPERATION, operationType))
     }
 
     interface View : MvpView {

@@ -42,7 +42,7 @@ DELETE FROM Operation
 WHERE id = ?;
 
 UpdateOperation:
-UPDATE Operation SET category = ?, sum = ?
+UPDATE Operation SET category = ?, sum = ?, repeator = ?
 WHERE id = ?;
 
 SelectOperationById:

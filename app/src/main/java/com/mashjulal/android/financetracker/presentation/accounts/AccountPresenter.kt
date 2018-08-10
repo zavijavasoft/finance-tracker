@@ -38,12 +38,12 @@ class AccountPresenter @Inject constructor(private val router: MainRouter,
 
     fun updateAccount(title: String, currency: String) {
         dispatchAccountInteractor.updateAccount(title, currency).subscribe {
-            router.navigate(MainRouter.Command(MainRouter.ACCOUNT_REPLACED, title))
+            router.navigate(MainRouter.Command(MainRouter.TO_SINGLE_BALANCE, title))
         }
     }
 
     fun requestAddAccount() {
-        router.navigate(MainRouter.Command(MainRouter.REQUEST_ADD_ACCOUNT))
+        router.navigate(MainRouter.Command(MainRouter.TO_SINGLE_ADD_ACCOUNT))
     }
 
 

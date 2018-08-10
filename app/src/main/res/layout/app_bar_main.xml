@@ -20,6 +20,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <LinearLayout
+        android:id="@+id/super_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="64dp"
+        android:orientation="horizontal">
+
+        <include layout="@layout/content_main" />
+
+        <include layout="@layout/content_secondary" />
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

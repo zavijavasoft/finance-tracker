@@ -6,6 +6,7 @@ import com.mashjulal.android.financetracker.presentation.accounts.AccountFragmen
 import com.mashjulal.android.financetracker.presentation.accounts.AddAccountFragment
 import com.mashjulal.android.financetracker.presentation.categories.AddCategoryFragment
 import com.mashjulal.android.financetracker.presentation.categories.CategoryFragment
+import com.mashjulal.android.financetracker.presentation.chart.ChartFragment
 import com.mashjulal.android.financetracker.presentation.editoperation.AddOperationFragment
 import com.mashjulal.android.financetracker.presentation.main.MainFragment
 import com.mashjulal.android.financetracker.presentation.root.MainActivity
@@ -36,5 +37,6 @@ interface AppComponent {
     fun inject(fragment: AddOperationFragment)
     fun inject(fragment: AddAccountFragment)
     fun inject(fragment: AddCategoryFragment)
+    fun inject(fragment: ChartFragment)
     fun inject(mainActivity: MainActivity)
 }

@@ -11,6 +11,12 @@
         <item>Entertainment</item>
     </string-array>
 
+    <string-array name="chart_periods">
+        <item>Week</item>
+        <item>Two Weeks</item>
+        <item>Month</item>
+    </string-array>
+
     <string-array name="operation_type_entries">
         <item>Incomings</item>
         <item>Outgoings</item>

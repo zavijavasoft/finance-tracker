@@ -8,6 +8,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="nav_menu_list_accounts">Список счетов</string>
     <string name="nav_menu_list_categories">Список категорий</string>
+    <string name="nav_menu_list_accounts_and_categories">Счета и категории</string>
 
     <string name="title_balance">Баланс</string>
     <string name="title_activity_settings">Настройки</string>
@@ -54,4 +55,6 @@
     <string name="radio_weekly_text">Повторять каждую неделю</string>
     <string name="radio_monthly_text">Повторять каждый месяц</string>
     <string name="nav_menu_accounts">Счета</string>
+    <string name="chart_title">Отчетность за период</string>
+
 </resources>

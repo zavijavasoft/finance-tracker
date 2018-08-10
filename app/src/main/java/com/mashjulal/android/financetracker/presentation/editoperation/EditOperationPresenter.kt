@@ -22,8 +22,9 @@ class EditOperationPresenter @Inject constructor(
 ) : MvpPresenter<EditOperationPresenter.View>() {
 
 
+
     fun cancelOperation() {
-        router.navigate(MainRouter.Command(MainRouter.CANCEL_OPERATION))
+        router.navigate(MainRouter.Command(MainRouter.TO_SINGLE_BALANCE))
     }
 
     fun saveOperation(operation: Operation) {
@@ -31,7 +32,7 @@ class EditOperationPresenter @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    router.navigate(MainRouter.Command(MainRouter.ACCEPT_OPERATION))
+                    router.navigate(MainRouter.Command(MainRouter.TO_SINGLE_BALANCE))
                 }
 
     }
