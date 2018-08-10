@@ -29,20 +29,21 @@
 
     <group android:id="@+id/gpr_main">
         <item
-            android:id="@+id/navItemAccounts"
-            android:icon="@drawable/ic_card_giftcard_green_24dp"
-            android:title="@string/nav_menu_list_accounts" />
-
-        <item
             android:id="@+id/navItemCategories"
             android:icon="@drawable/ic_card_giftcard_green_24dp"
-            android:title="@string/nav_menu_list_categories" />
+            android:title="@string/nav_menu_list_categories"
+            android:visible="false" />
+
+        <item
+            android:id="@+id/navItemAccounts"
+            android:icon="@drawable/ic_card_giftcard_green_24dp"
+            android:title="@string/nav_menu_list_accounts"
+            android:visible="false" />
 
         <item
             android:id="@+id/navItemAccountsCategories"
             android:icon="@drawable/ic_card_giftcard_green_24dp"
-            android:title="@string/nav_menu_list_accounts_and_categories"
-            android:visible="false" />
+            android:title="@string/nav_menu_list_accounts_and_categories" />
 
 
         <item

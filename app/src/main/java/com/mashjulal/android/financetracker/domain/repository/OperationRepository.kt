@@ -17,4 +17,5 @@ interface OperationRepository {
     fun getByType(operationType: OperationType): Single<List<Operation>>
     fun getByAccountAfter(account: Account, date: Date): Single<List<Operation>>
     fun insert(operation: Operation): Completable
+    fun update(operation: Operation): Completable
 }

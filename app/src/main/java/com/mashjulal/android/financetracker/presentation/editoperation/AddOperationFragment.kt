@@ -147,8 +147,8 @@ class AddOperationFragment : MvpAppCompatFragment(), EditOperationPresenter.View
             val operationTypeRepr = spinnerOperationType.selectedItem as String
             val operationType = if (operationTypeRepr == getString(R.string.incomings)) OperationType.INCOMINGS
             else OperationType.OUTGOINGS
-            val account = Account(UITextDecorator.mapUsableToSpecial(activity?.applicationContext, spinnerAccount.selectedItem as String))
-            val specialCategoryName = UITextDecorator.mapUsableToSpecial(activity?.applicationContext, spinnerCategory.selectedItem as String)
+            val account = Account(UITextDecorator.mapUsableToSpecial(appContext, spinnerAccount.selectedItem as String))
+            val specialCategoryName = UITextDecorator.mapUsableToSpecial(appContext.applicationContext, spinnerCategory.selectedItem as String)
             val category = categories[operationType]
                     ?.find { it.title == specialCategoryName }
                     ?: throw Exception("Category can't be null")

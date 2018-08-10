@@ -76,6 +76,20 @@ class OperationRepositoryImpl @Inject constructor(private val core: SQLiteCore)
                 .take(1).single(listOf())
     }
 
+    override fun update(operation: Operation): Completable {
+        return Completable.fromCallable {
+            val db = core.database.writableDatabase
+            val updateOperation = OperationModel.UpdateOperation(db)
+            with(operation) {
+                updateOperation.bind(category.title,
+                        amount.amount.toDouble(),
+                        repeator.toString(),
+                        id)
+            }
+            updateOperation.executeUpdateDelete()
+        }
+    }
+
     override fun insert(operation: Operation): Completable {
         return Completable.fromCallable {
             val db = core.database.writableDatabase

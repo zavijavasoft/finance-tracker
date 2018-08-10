@@ -17,6 +17,9 @@ private val tomorrow = Date(calendar.timeInMillis + 1000 * 60 * 60 * 24)
 private val tomorrow2Days = Date(tomorrow.time + 1000 * 60 * 60 * 24)
 
 class OperationRepositoryStub : OperationRepository {
+    override fun update(operation: Operation): Completable {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private var data: HashMap<Long, Operation> = hashMapOf(
             1L to Operation(tomorrow.time, Money(BigDecimal.valueOf(10),

@@ -50,12 +50,8 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
          * @return A new instance of fragment MainFragment.
          */
         @JvmStatic
-        fun newInstance(accountName: String): MainFragment {
-            return MainFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ACCOUNT_PARAM, accountName)
-                }
-            }
+        fun newInstance(): MainFragment {
+            return MainFragment()
         }
     }
 
@@ -133,17 +129,12 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
         } else {
             throw ClassCastException(context.toString() + " must implement OnFragmentInteractionListener")
         }
-        presenter.initialCheck()
+
     }
 
     override fun onStart() {
         super.onStart()
         activity?.invalidateOptionsMenu()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        refreshDataCards(accountName)
     }
 
     override fun onDetach() {
@@ -171,6 +162,10 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
                         }))
                 .build()
         rvMenu.adapter = adapter
+        fabBalance.setOnClickListener {
+            callAddOperation(OperationType.OUTGOINGS)
+        }
+
     }
 
     private fun callAddOperation(operationType: OperationType) {

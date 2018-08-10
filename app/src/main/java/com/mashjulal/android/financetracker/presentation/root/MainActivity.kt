@@ -18,6 +18,7 @@ import com.mashjulal.android.financetracker.presentation.accounts.AccountFragmen
 import com.mashjulal.android.financetracker.presentation.accounts.AddAccountFragment
 import com.mashjulal.android.financetracker.presentation.categories.AddCategoryFragment
 import com.mashjulal.android.financetracker.presentation.categories.CategoryFragment
+import com.mashjulal.android.financetracker.presentation.chart.ChartFragment
 import com.mashjulal.android.financetracker.presentation.editoperation.AddOperationFragment
 import com.mashjulal.android.financetracker.presentation.main.AboutFragment
 import com.mashjulal.android.financetracker.presentation.main.MainFragment
@@ -52,6 +53,7 @@ class MainActivity : MvpAppCompatActivity(),
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+
         val toggle = ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawerLayout.addDrawerListener(toggle)
@@ -59,11 +61,13 @@ class MainActivity : MvpAppCompatActivity(),
 
         navView.setNavigationItemSelectedListener(this)
 
+        val orientation = resources.configuration.orientation
+        presenter.notifyOrientation(orientation)
         if (savedInstanceState == null) {
-            val fragment = MainFragment.newInstance("")
-            supportFragmentManager.beginTransaction().add(R.id.container, fragment).commit()
+            presenter.initialCheck()
+            presenter.executePlanned()
+            presenter.initialNavigation()
         }
-
     }
 
     override fun onResume() {
@@ -101,6 +105,10 @@ class MainActivity : MvpAppCompatActivity(),
                 presenter.menuItemSelected(RootPresenter.MenuItemClass.CATEGORIES_LIST, "")
             }
 
+            R.id.navItemAccountsCategories -> {
+                presenter.menuItemSelected(RootPresenter.MenuItemClass.ACCOUNT_CATEGORIES_LIST, "")
+            }
+
             R.id.navItemAbout -> {
                 // open about page
                 presenter.menuItemSelected(RootPresenter.MenuItemClass.ABOUT, "")
@@ -131,46 +139,39 @@ class MainActivity : MvpAppCompatActivity(),
     }
 
 
-    private fun navigateSingleFragment(tag: String, newFragment: () -> Fragment) {
-        val fragment = supportFragmentManager
-                .findFragmentByTag(tag)
-        if (fragment == null) {
+    private fun navigateSingleFragment(tag: String, toSecondary: Boolean, newFragment: () -> Fragment) {
+        val containerId = if (toSecondary) R.id.container_secondary else R.id.container
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, newFragment(), tag)
+                    .replace(containerId, newFragment(), tag)
                     .commit()
-
-        }
-
     }
 
     override fun defaultBackPressed() {
         super.onBackPressed()
     }
 
-    override fun navigateAddOperation(account: String, operationType: OperationType) {
-        navigateSingleFragment(AddOperationFragment.FRAGMENT_TAG)
+    override fun navigateAddOperation(account: String, operationType: OperationType, toSecondary: Boolean) {
+        navigateSingleFragment(AddOperationFragment.FRAGMENT_TAG, toSecondary)
         { AddOperationFragment.newInstance(account, operationType.toString()) }
     }
 
 
     override fun navigateBalance(account: String) {
-        val special = UITextDecorator.mapUsableToSpecial(applicationContext, account)
-        navigateSingleFragment(MainFragment.FRAGMENT_TAG) { MainFragment.newInstance(special) }
-
+        navigateSingleFragment(MainFragment.FRAGMENT_TAG, false) { MainFragment.newInstance() }
     }
 
     override fun navigateSettings() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun navigateAbout() {
-        navigateSingleFragment(AboutFragment.FRAGMENT_TAG) { AboutFragment.newInstance() }
+    override fun navigateAbout(toSecondary: Boolean) {
+        navigateSingleFragment(AboutFragment.FRAGMENT_TAG, toSecondary) { AboutFragment.newInstance() }
     }
 
     override fun updateNavigationMenu(accounts: List<Account>) {
         val submenu = navView.menu.getItem(1).subMenu
         submenu.clear()
-        submenu.setIcon(R.drawable.ic_github)
+        submenu.setIcon(R.drawable.ic_card_giftcard_green_24dp)
 
         usableAccountTitlesSorted = accounts.asSequence()
                 .map { UITextDecorator.mapSpecialToUsable(applicationContext, it.title) }
@@ -179,24 +180,28 @@ class MainActivity : MvpAppCompatActivity(),
         for ((idx, account) in usableAccountTitlesSorted.withIndex()) {
             submenu.add(1, ACCOUNT_MENU_BASE_INDEX + idx, idx, account) // id is idx+ my constant
             val item = submenu.getItem(idx)
-            item.setIcon(R.drawable.ic_github)
+            item.setIcon(R.drawable.ic_salary_green_24dp)
         }
     }
 
     override fun navigateAccountsList() {
-        navigateSingleFragment(AccountFragment.FRAGMENT_TAG) { AccountFragment.newInstance() }
+        navigateSingleFragment(AccountFragment.FRAGMENT_TAG, false) { AccountFragment.newInstance() }
     }
 
-    override fun navigateAddAccount() {
-        navigateSingleFragment(AddAccountFragment.FRAGMENT_TAG) { AddAccountFragment.newInstance() }
+    override fun navigateAddAccount(toSecondary: Boolean) {
+        navigateSingleFragment(AddAccountFragment.FRAGMENT_TAG, toSecondary) { AddAccountFragment.newInstance() }
     }
 
-    override fun navigateCategoriesList() {
-        navigateSingleFragment(CategoryFragment.FRAGMENT_TAG) { CategoryFragment.newInstance() }
+    override fun navigateCategoriesList(toSecondary: Boolean) {
+        navigateSingleFragment(CategoryFragment.FRAGMENT_TAG, toSecondary) { CategoryFragment.newInstance() }
     }
 
-    override fun navigateAddCategory() {
-        navigateSingleFragment(AddCategoryFragment.FRAGMENT_TAG) { AddCategoryFragment.newInstance() }
+    override fun navigateAddCategory(toSecondary: Boolean) {
+        navigateSingleFragment(AddCategoryFragment.FRAGMENT_TAG, toSecondary) { AddCategoryFragment.newInstance() }
+    }
+
+    override fun navigateChart(toSecondary: Boolean) {
+        navigateSingleFragment(ChartFragment.FRAGMENT_TAG, toSecondary) { ChartFragment.newInstance() }
     }
 
 }

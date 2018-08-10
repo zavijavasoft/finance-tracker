@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:contentDescription="@string/category_icon_image"
-        app:srcCompat="@drawable/ic_github" />
+        app:srcCompat="@drawable/ic_shopping_red_24dp" />
 
     <TextView
         android:id="@+id/tvCategoryInList"
