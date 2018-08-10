@@ -7,8 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".presentation.chart.ChartFragment">
 
-
-
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/chartIncomings"
         android:layout_width="match_parent"
@@ -17,6 +15,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent" />
-
 
 </android.support.constraint.ConstraintLayout>
