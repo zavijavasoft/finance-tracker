@@ -5,7 +5,7 @@ import com.arellomobile.mvp.MvpPresenter
 import com.arellomobile.mvp.MvpView
 import com.mashjulal.android.financetracker.domain.financialcalculations.Account
 import com.mashjulal.android.financetracker.domain.financialcalculations.Currency
-import com.mashjulal.android.financetracker.domain.interactor.DispatchAccountInteractor
+import com.mashjulal.android.financetracker.domain.interactor.RequestAccountInteractor
 import com.mashjulal.android.financetracker.domain.repository.CurrencyRepository
 import com.mashjulal.android.financetracker.route.MainRouter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @InjectViewState
 class AccountPresenter @Inject constructor(private val router: MainRouter,
-                                           private val dispatchAccountInteractor: DispatchAccountInteractor,
+                                           private val dispatchAccountInteractor: RequestAccountInteractor,
                                            private val currencyRepository: CurrencyRepository)
     : MvpPresenter<AccountPresenter.View>() {
 

@@ -2,9 +2,12 @@ package com.mashjulal.android.financetracker.route
 
 import android.content.res.Configuration
 import io.reactivex.subjects.BehaviorSubject
+import javax.inject.Inject
+import javax.inject.Singleton
 
 
-class MainRouter {
+@Singleton
+class MainRouter @Inject constructor() {
 
     data class Command(val command: String,
                        val param1: String = "",

@@ -2,7 +2,6 @@ package com.mashjulal.android.financetracker.presentation.main
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.AdapterView
@@ -27,14 +26,7 @@ import com.mashjulal.android.financetracker.presentation.utils.UITextDecorator
 import kotlinx.android.synthetic.main.fragment_main.*
 import javax.inject.Inject
 
-/**
- * A simple [Fragment] subclass for main page.
- * Represents list of menu items with different finance actions:
- * current balance.
- * Use the [MainFragment.newInstance] factory method to
- * create an instance of this fragment.
- *
- */
+
 class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
 
     private val MAX_ITEM_IN_LIST_COUNT = 5
@@ -43,12 +35,7 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
     companion object {
         const val FRAGMENT_TAG = "MAIN_FRAGMENT_TAG"
         private const val ACCOUNT_PARAM = "accountParam"
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @return A new instance of fragment MainFragment.
-         */
+
         @JvmStatic
         fun newInstance(): MainFragment {
             return MainFragment()

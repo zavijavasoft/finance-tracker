@@ -41,17 +41,7 @@ class RootPresenter @Inject constructor(
                 val cmd = it
                 when (it.command) {
                     MainRouter.SHUTDOWN -> viewState.defaultBackPressed()
-                    MainRouter.ACCOUNT_REPLACED -> {
-                        currentAccoutTitle = it.param1
-                        dispatchAccountInteractor.execute()
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe { accountList: List<Account> ->
-                                    viewState.updateNavigationMenu(accountList)
-
-                                }
-                    }
-
+                    MainRouter.ACCOUNT_REPLACED -> handleAccountReplaced(it)
 
                     MainRouter.TO_SINGLE_BALANCE -> viewState.navigateBalance(currentAccoutTitle)
                     MainRouter.TO_SINGLE_ACCOUNT_LIST -> viewState.navigateAccountsList()
@@ -89,6 +79,17 @@ class RootPresenter @Inject constructor(
 
                 }
             }
+
+    fun handleAccountReplaced(it: MainRouter.Command) {
+        currentAccoutTitle = it.param1
+        dispatchAccountInteractor.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { accountList: List<Account> ->
+                    viewState.updateNavigationMenu(accountList)
+
+                }
+    }
 
 
     fun needUpdate() {
