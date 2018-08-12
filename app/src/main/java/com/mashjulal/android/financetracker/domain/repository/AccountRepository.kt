@@ -6,8 +6,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 
 interface AccountRepository {
-    fun getByName(title: String): Single<Account>
+    fun getByName(title: String): Single<List<Account>>
     fun getAll(): Single<List<Account>>
     fun update(title: String, money: Money): Completable
 
+    fun insert(title: String, money: Money): Completable
 }

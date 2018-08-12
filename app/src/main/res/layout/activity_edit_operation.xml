@@ -6,37 +6,12 @@
     android:layout_height="match_parent"
     android:elevation="10dp"
     android:fadingEdgeLength="12dp"
-    tools:context=".presentation.editoperation.EditOperationActivity">
+    tools:context=".presentation.editoperation.AddOperationFragment">
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/account"
-        android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/spinnerCategory"
-        app:layout_constraintTop_toTopOf="@+id/textView4" />
 
-    <Spinner
-        android:id="@+id/spinnerAccount"
-        android:layout_width="171dp"
-        android:layout_height="43dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
-    <Spinner
-        android:id="@+id/spinnerCategory"
-        android:layout_width="126dp"
-        android:layout_height="44dp"
-        app:layout_constraintStart_toStartOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <EditText
         android:id="@+id/etAmount"
-        android:text="@string/zero"
         android:hint="@string/zero"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -75,6 +50,31 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/etAmount"
         app:layout_constraintTop_toTopOf="@+id/etAmount" />
+
+
+    <Spinner
+        android:id="@+id/spinnerAccount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="4dp"
+        android:entries="@array/operation_type_entries"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/textViewAccountTitle"
+        app:layout_constraintTop_toBottomOf="@id/textViewAccountTitle" />
+
+    <Spinner
+        android:id="@+id/spinnerCategory"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:entries="@array/operation_type_entries"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="@+id/textViewCategoryTitle"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCategoryTitle" />
+
 
     <Button
         android:id="@+id/btnSelectDate"
@@ -121,27 +121,37 @@
         app:layout_constraintTop_toTopOf="@+id/textView2" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/textViewCategoryTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/category"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinnerAccount" />
+
+    <TextView
+        android:id="@+id/textViewAccountTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/category"
+        android:text="@string/account"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSelectDate" />
 
+
     <RadioGroup
         android:id="@+id/radioGroup"
         android:layout_width="0dp"
-        android:layout_height="150dp"
-        android:layout_marginLeft="16dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/spinnerAccount"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/spinnerCategory"
-        app:layout_constraintVertical_bias="0.111">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.1">
 
         <RadioButton
             android:id="@+id/radio_none"

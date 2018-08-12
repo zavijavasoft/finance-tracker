@@ -49,15 +49,36 @@ class CategoryMapper {
                 R.string.predefined_to_other_account_category to PREDEFINED_TO_ACCOUNT
         )
 
+        fun specialToUsableId(special: String) = mapSpecialToUsable[special]
+                ?: R.string.predefined_wrong
+
+        fun usableIdToSpecial(@DrawableRes id: Int) = mapUsableToSpecial[id]
+                ?: PREDEFINED_OTHER_OUTGOINGS
+
+        fun hasItId(@DrawableRes id: Int) = mapUsableToSpecial.keys.contains(id)
+
+
         fun getStringByRId(@DrawableRes key: Int) = mapResourceIDtoString[key] ?: "OtherOutgoings"
-        fun getRIdByString(@DrawableRes key: String) = mapStringToResourceID[key]
-                ?: R.drawable.ic_bills_red_24dp
+        fun getRIdByString(key: String) = mapStringToResourceID[key]
+                ?: R.drawable.ic_launcher_background
+
+        fun isSpecialTransferCategory(category: Category): Boolean =
+                category.title in listOf(PREDEFINED_FROM_ACCOUNT, PREDEFINED_TO_ACCOUNT)
+
+        fun isUndeletable(special: String) =
+                special in listOf(PREDEFINED_OTHER_INCOMINGS,
+                        PREDEFINED_OTHER_OUTGOINGS,
+                        PREDEFINED_FROM_ACCOUNT,
+                        PREDEFINED_TO_ACCOUNT)
+
 
         fun newCategory(innerCategory: InnerCategory): Category {
             return Category(
-                    OperationType.getTypeByString(innerCategory.type()),
+                    OperationType.fromString(innerCategory.type()),
                     innerCategory.category(),
                     getRIdByString(innerCategory.subcategory()))
         }
+
+
     }
 }

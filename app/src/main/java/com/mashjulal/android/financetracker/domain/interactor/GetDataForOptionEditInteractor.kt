@@ -5,6 +5,7 @@ import com.mashjulal.android.financetracker.domain.financialcalculations.Categor
 import com.mashjulal.android.financetracker.domain.financialcalculations.OperationType
 import com.mashjulal.android.financetracker.domain.repository.AccountRepository
 import com.mashjulal.android.financetracker.domain.repository.CategoryRepository
+import com.mashjulal.android.financetracker.domain.repository.sqliteimpl.utils.CategoryMapper
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import javax.inject.Inject
@@ -23,7 +24,7 @@ class GetDataForOptionEditInteractorImpl @Inject constructor(
         val accounts = accountRepository.getAll()
         val categories = categoryRepository.getAll()
         return Single.zip(accounts, categories, BiFunction { accountList, categoriesList ->
-            accountList to categoriesList.groupBy { it.operationType }
+            accountList to categoriesList.filter { !CategoryMapper.isSpecialTransferCategory(it) }.groupBy { it.operationType }
         })
     }
 

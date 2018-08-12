@@ -2,6 +2,7 @@ package com.mashjulal.android.financetracker.domain.interactor
 
 import com.example.delegateadapter.delegate.diff.IComparableItem
 import com.mashjulal.android.financetracker.domain.financialcalculations.*
+import com.mashjulal.android.financetracker.domain.financialcalculations.Currency
 import com.mashjulal.android.financetracker.domain.repository.BalanceRepository
 import com.mashjulal.android.financetracker.domain.repository.CurrencyRepository
 import com.mashjulal.android.financetracker.domain.repository.OperationRepository
@@ -12,6 +13,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import java.lang.Math.min
+import java.util.*
 import javax.inject.Inject
 
 interface RefreshMainScreenDataInteractor {
@@ -39,7 +41,7 @@ class RefreshMainScreenDataInteractorImpl @Inject constructor(
 
     override fun execute(account: Account): Observable<List<IComparableItem>> {
         val balances = balanceRepository.getLastByAccount(account)
-        val operations = operationRepository.getAll()
+        val operations = operationRepository.getByAccountAfter(account, Date())
         return Single.zip(balances, operations, BiFunction { balanceFound: List<Balance>,
                                                              operationList: List<Operation> ->
             createModelsFrom(balanceFound, operationList)

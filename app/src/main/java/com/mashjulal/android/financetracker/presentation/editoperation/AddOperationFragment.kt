@@ -1,34 +1,49 @@
 package com.mashjulal.android.financetracker.presentation.editoperation
 
-import android.app.Activity
+
 import android.app.DatePickerDialog
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.support.v7.app.AppCompatActivity
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import com.arellomobile.mvp.MvpAppCompatActivity
+import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.mashjulal.android.financetracker.App
 import com.mashjulal.android.financetracker.R
 import com.mashjulal.android.financetracker.domain.financialcalculations.*
 import com.mashjulal.android.financetracker.domain.financialcalculations.Currency
+import com.mashjulal.android.financetracker.presentation.utils.UITextDecorator
 import kotlinx.android.synthetic.main.activity_edit_operation.*
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-private const val ARG_OPERATION_TYPE = "type"
-private const val ARG_OPERATION_ACCOUNT = "account"
+class AddOperationFragment : MvpAppCompatFragment(), EditOperationPresenter.View {
 
-private const val MAX_AMOUNT_DIGIT_COUNT = 12
+    companion object {
 
-class EditOperationActivity : MvpAppCompatActivity(), EditOperationPresenter.View {
+        const val FRAGMENT_TAG = "ADD_OPERATION_FRAGMENT_TAG"
+
+        private const val OPERATION_TYPE_PARAM = "OPERATION_TYPE_PARAM"
+        private const val ACCOUNT_PARAM = "ACCOUNT_TYPE_PARAM"
+
+        @JvmStatic
+        fun newInstance(account: String, operationType: String) =
+                AddOperationFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(OPERATION_TYPE_PARAM, operationType)
+                        putString(ACCOUNT_PARAM, account)
+                    }
+                }
+    }
+
+
+    @Inject
+    lateinit var appContext: Context
 
     @Inject
     @InjectPresenter
@@ -43,14 +58,21 @@ class EditOperationActivity : MvpAppCompatActivity(), EditOperationPresenter.Vie
     private lateinit var categories: Map<OperationType, List<Category>>
     private lateinit var accounts: List<Account>
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        App.appComponent.inject(this)
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_operation)
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            operationType = it.getString(OPERATION_TYPE_PARAM)
+            accountName = it.getString(ACCOUNT_PARAM)
+        }
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setActionBar()
+        setHasOptionsMenu(true)
         initLayout()
-        parseArgs()
-        setResult(Activity.RESULT_CANCELED)
     }
 
     private fun initLayout() {
@@ -61,33 +83,10 @@ class EditOperationActivity : MvpAppCompatActivity(), EditOperationPresenter.Vie
         presenter.requestData()
     }
 
-    private fun showDateDialog() {
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val month = calendar.get(Calendar.MONTH)
-        val year = calendar.get(Calendar.YEAR)
 
-        val dateChangeCallback = DatePickerDialog.OnDateSetListener { _, y, m, d ->
-            calendar.set(y, m, d)
-            showSelectedDate()
-        }
-        val dpk = DatePickerDialog(this, dateChangeCallback, year, month, day)
-        dpk.show()
-    }
-
-    private fun showSelectedDate() {
-        btnSelectDate.text = SimpleDateFormat.getDateInstance().format(calendar.time)
-    }
-
-    private fun parseArgs() {
-        operationType = intent.getStringExtra(ARG_OPERATION_TYPE)
-        spinnerOperationType.setSelection(if (operationType == OperationType.INCOMINGS.name) 0 else 1)
-
-        accountName = intent.getStringExtra(ARG_OPERATION_ACCOUNT)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_activity_edit_operation, menu)
-        return true
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.menu_activity_edit_operation, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -99,6 +98,46 @@ class EditOperationActivity : MvpAppCompatActivity(), EditOperationPresenter.Vie
         return super.onOptionsItemSelected(item)
     }
 
+    private fun setActionBar() {
+        (activity as AppCompatActivity).supportActionBar?.title =
+                UITextDecorator.formActionBarTitle(appContext,
+                        appContext.getString(R.string.create_new_operation))
+
+    }
+
+
+    private fun showDateDialog() {
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val month = calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+
+        val dateChangeCallback = DatePickerDialog.OnDateSetListener { _, y, m, d ->
+            calendar.set(y, m, d)
+            showSelectedDate()
+        }
+        val dpk = DatePickerDialog(appContext, dateChangeCallback, year, month, day)
+        dpk.show()
+    }
+
+    private fun showSelectedDate() {
+        btnSelectDate.text = SimpleDateFormat.getDateInstance().format(calendar.time)
+    }
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.activity_edit_operation, container, false)
+
+    }
+
+
+    override fun onAttach(context: Context?) {
+        App.appComponent.inject(this)
+        super.onAttach(context)
+    }
+
+
     private fun finishEdit() {
         let {
             val amount = BigDecimal(etAmount.text.toString())
@@ -108,14 +147,16 @@ class EditOperationActivity : MvpAppCompatActivity(), EditOperationPresenter.Vie
             val operationTypeRepr = spinnerOperationType.selectedItem as String
             val operationType = if (operationTypeRepr == getString(R.string.incomings)) OperationType.INCOMINGS
             else OperationType.OUTGOINGS
-            val account = Account(spinnerAccount.selectedItem as String)
+            val account = Account(UITextDecorator.mapUsableToSpecial(appContext, spinnerAccount.selectedItem as String))
+            val specialCategoryName = UITextDecorator.mapUsableToSpecial(appContext.applicationContext, spinnerCategory.selectedItem as String)
             val category = categories[operationType]
-                    ?.find { it.title == spinnerCategory.selectedItem as String }
+                    ?.find { it.title == specialCategoryName }
                     ?: throw Exception("Category can't be null")
             val operation = Operation(date.time, Money(amount, currency), category, date, account)
             presenter.saveOperation(operation)
         }
     }
+
 
     override fun setData(accounts: List<Account>, categories: Map<OperationType, List<Category>>) {
         setOperationTypes()
@@ -133,9 +174,9 @@ class EditOperationActivity : MvpAppCompatActivity(), EditOperationPresenter.Vie
                 val operationType = if (operation == getString(R.string.incomings)) OperationType.INCOMINGS
                 else OperationType.OUTGOINGS
 
-                spinnerCategory.adapter = ArrayAdapter(this@EditOperationActivity,
+                spinnerCategory.adapter = ArrayAdapter(appContext,
                         android.R.layout.simple_spinner_dropdown_item,
-                        categories[operationType]?.map { it.title })
+                        categories[operationType]?.map { UITextDecorator.mapSpecialToUsable(appContext, it.title) }!!.toMutableList())
                 spinnerCategory.setSelection(0)
             }
 
@@ -144,35 +185,26 @@ class EditOperationActivity : MvpAppCompatActivity(), EditOperationPresenter.Vie
 
     private fun setAccounts(data: List<Account>) {
         this.accounts = data
-        val adapter = ArrayAdapter(this,
-                android.R.layout.simple_spinner_dropdown_item, accounts.map { it.title })
+        val adapter = ArrayAdapter(appContext,
+                android.R.layout.simple_spinner_dropdown_item,
+                accounts.map { UITextDecorator.mapSpecialToUsable(appContext, it.title) })
         spinnerAccount.adapter = adapter
-        val position = adapter.getPosition(accountName)
+        adapter.notifyDataSetChanged()
+        val position = adapter.getPosition(UITextDecorator.mapSpecialToUsable(appContext, accountName))
         spinnerAccount.setSelection(position)
     }
 
     private fun setCategories(categories: Map<OperationType, List<Category>>) {
+
         this.categories = categories
         val operation = OperationType.valueOf(operationType)
-        val adapter = ArrayAdapter(this,
-                android.R.layout.simple_spinner_dropdown_item, categories[operation].orEmpty()
-                .map { it.title })
+        val adapter = ArrayAdapter(appContext,
+                android.R.layout.simple_spinner_item, categories[operation].orEmpty()
+                .map { UITextDecorator.mapSpecialToUsable(appContext, it.title) })
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCategory.adapter = adapter
+        adapter.notifyDataSetChanged()
         spinnerCategory.setSelection(0)
     }
 
-    override fun closeEditWindow() {
-        setResult(Activity.RESULT_OK)
-        finish()
-    }
-
-
-    companion object {
-
-        fun newIntent(context: Context, type: OperationType, account: String) =
-                with(Intent(context, EditOperationActivity::class.java)) {
-                    putExtra(ARG_OPERATION_TYPE, type.name)
-                    putExtra(ARG_OPERATION_ACCOUNT, account)
-                }!!
-    }
 }

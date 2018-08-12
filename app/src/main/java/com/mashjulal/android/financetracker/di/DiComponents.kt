@@ -2,8 +2,14 @@ package com.mashjulal.android.financetracker.di
 
 import android.content.Context
 import com.mashjulal.android.financetracker.App
-import com.mashjulal.android.financetracker.presentation.editoperation.EditOperationActivity
+import com.mashjulal.android.financetracker.presentation.accounts.AccountFragment
+import com.mashjulal.android.financetracker.presentation.accounts.AddAccountFragment
+import com.mashjulal.android.financetracker.presentation.categories.AddCategoryFragment
+import com.mashjulal.android.financetracker.presentation.categories.CategoryFragment
+import com.mashjulal.android.financetracker.presentation.chart.ChartFragment
+import com.mashjulal.android.financetracker.presentation.editoperation.AddOperationFragment
 import com.mashjulal.android.financetracker.presentation.main.MainFragment
+import com.mashjulal.android.financetracker.presentation.root.MainActivity
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -26,5 +32,11 @@ interface AppComponent {
 
     fun inject(app: App)
     fun inject(fragment: MainFragment)
-    fun inject(activity: EditOperationActivity)
+    fun inject(fragment: AccountFragment)
+    fun inject(fragment: CategoryFragment)
+    fun inject(fragment: AddOperationFragment)
+    fun inject(fragment: AddAccountFragment)
+    fun inject(fragment: AddCategoryFragment)
+    fun inject(fragment: ChartFragment)
+    fun inject(mainActivity: MainActivity)
 }

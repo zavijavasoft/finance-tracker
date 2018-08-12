@@ -2,12 +2,12 @@ package com.mashjulal.android.financetracker.presentation.main
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -19,19 +19,31 @@ import com.mashjulal.android.financetracker.domain.financialcalculations.Account
 import com.mashjulal.android.financetracker.domain.financialcalculations.OperationType
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.balance.BalanceDelegateAdapter
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.IncomingsPreviewDelegateAdapter
+import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.IncomingsPreviewViewModel
 import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.OutgoingsPreviewDelegateAdapter
+import com.mashjulal.android.financetracker.presentation.main.recyclerview.operation.OutgoingsPreviewViewModel
+import com.mashjulal.android.financetracker.presentation.utils.UITextDecorator
 import kotlinx.android.synthetic.main.fragment_main.*
 import javax.inject.Inject
 
-/**
- * A simple [Fragment] subclass for main page.
- * Represents list of menu items with different finance actions:
- * current balance.
- * Use the [MainFragment.newInstance] factory method to
- * create an instance of this fragment.
- *
- */
+
 class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
+
+    private val MAX_ITEM_IN_LIST_COUNT = 5
+
+
+    companion object {
+        const val FRAGMENT_TAG = "MAIN_FRAGMENT_TAG"
+        private const val ACCOUNT_PARAM = "accountParam"
+
+        @JvmStatic
+        fun newInstance(): MainFragment {
+            return MainFragment()
+        }
+    }
+
+    @Inject
+    lateinit var appContext: Context
 
     @Inject
     @InjectPresenter
@@ -40,13 +52,15 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
     @ProvidePresenter
     fun providePresenter() = presenter
 
+    var accountName: String = ""
 
     private var listener: OnFragmentInteractionListener? = null
     private lateinit var spinnerAccounts: Spinner
 
     private fun setActionBar() {
-        setHasOptionsMenu(true)
-        (activity as AppCompatActivity).supportActionBar?.title = ""
+        (activity as AppCompatActivity).supportActionBar?.title =
+                UITextDecorator.formActionBarTitle(appContext, accountName, true)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -63,11 +77,21 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
 
             override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?,
                                         position: Int, id: Long) {
-                val accountTitle = if (position > 0) spinnerAccounts.adapter.getItem(position) as String
+                val accountTitle = if (position > 0)
+                    UITextDecorator.mapUsableToSpecial(activity?.applicationContext, spinnerAccounts.adapter.getItem(position) as String)
                 else ""
-                refreshDataCards(accountTitle)
+//                refreshDataCards(accountTitle)
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        arguments?.let {
+            accountName = it.getString(ACCOUNT_PARAM)
+        }
+
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
@@ -92,17 +116,12 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
         } else {
             throw ClassCastException(context.toString() + " must implement OnFragmentInteractionListener")
         }
-        presenter.initialCheck()
+
     }
 
     override fun onStart() {
         super.onStart()
         activity?.invalidateOptionsMenu()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        refreshDataCards()
     }
 
     override fun onDetach() {
@@ -130,24 +149,49 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
                         }))
                 .build()
         rvMenu.adapter = adapter
+        fabBalance.setOnClickListener {
+            callAddOperation(OperationType.OUTGOINGS)
+        }
+
     }
 
     private fun callAddOperation(operationType: OperationType) {
-        if (spinnerAccounts.selectedItemPosition == 0) {
-            listener?.onErrorOccurred(getString(R.string.error_operation_cant_be_added_to_all))
+        if (accountName.isEmpty()) {
+            Toast.makeText(activity?.applicationContext,
+                    R.string.error_operation_cant_be_added_to_all, Toast.LENGTH_SHORT).show()
             return
         }
-        val accountName = spinnerAccounts.selectedItem as String
-        listener?.onAddOperationClicked(operationType, accountName)
+        presenter.requestAddOperation(operationType.toString())
     }
 
-    override fun refreshData(data: List<IComparableItem>) {
+    override fun refreshData(accountTitle: String, data: List<IComparableItem>) {
+        accountName = accountTitle
+        setActionBar()
+        val balance = data[0]
+        val incomings = data[1] as IncomingsPreviewViewModel
+        val incOps = incomings.operations.map {
+            it.copy(category = it.category.copy(title = UITextDecorator.mapSpecialToUsable(appContext, it.category.title)))
+        }
+        val outgoings = data[2] as OutgoingsPreviewViewModel
+        val outOps = outgoings.operations.map {
+            it.copy(category = it.category.copy(title = UITextDecorator.mapSpecialToUsable(appContext, it.category.title)))
+        }
+
+
+        val newIncomings = IncomingsPreviewViewModel(incomings.balance,
+                incOps.subList(0, Math.min(MAX_ITEM_IN_LIST_COUNT, incOps.size)),
+                incOps.size > MAX_ITEM_IN_LIST_COUNT)
+        val newOutgoings = OutgoingsPreviewViewModel(outgoings.balance,
+                outOps.subList(0, Math.min(MAX_ITEM_IN_LIST_COUNT, outOps.size)),
+                outOps.size > MAX_ITEM_IN_LIST_COUNT)
+
         val adapter = rvMenu.adapter as DiffUtilCompositeAdapter
-        adapter.swapData(data)
+        adapter.swapData(listOf(balance, newIncomings, newOutgoings))
     }
 
     override fun setAccounts(data: List<Account>) {
-        val entries = listOf(getString(R.string.all_accounts)) + data.map { it.title }
+        val entries = listOf(getString(R.string.all_accounts)) +
+                data.map { UITextDecorator.mapSpecialToUsable(activity?.applicationContext, it.title) }
         val adapter = ArrayAdapter<String>(context,
                 R.layout.item_spinner_toolbar, entries)
         spinnerAccounts.adapter = adapter
@@ -155,15 +199,6 @@ class MainFragment : MvpAppCompatFragment(), MainPresenter.View {
         spinnerAccounts.setSelection(0)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @return A new instance of fragment MainFragment.
-         */
-        fun newInstance() = MainFragment()
-    }
 
     interface OnFragmentInteractionListener {
         fun onAddOperationClicked(operationType: OperationType, accountName: String)

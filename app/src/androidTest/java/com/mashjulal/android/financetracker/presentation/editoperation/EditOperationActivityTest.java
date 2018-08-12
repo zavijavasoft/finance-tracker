@@ -5,7 +5,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.mashjulal.android.financetracker.R;
-import com.mashjulal.android.financetracker.presentation.main.MainActivity;
+import com.mashjulal.android.financetracker.presentation.root.MainActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class EditOperationActivityTest {
     @Test
     public void addOperationTest() {
         onView(withId(R.id.menuSpinnerAccounts)).perform(click());
-        onView(withText("Cash(RUB)")).perform(click());
+        onView(withText("Наличные рубли")).perform(click());
         onView(withId(R.id.rvMenu)).perform(
                 RecyclerViewActions.actionOnItemAtPosition(1, RvViewAction.clickChildViewWithId(R.id.btnNewOperation)));
         onView(withId(R.id.etAmount))

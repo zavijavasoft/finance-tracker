@@ -8,6 +8,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 
 class CategoryRepositoryStub : CategoryRepository {
+    override fun getByTitle(title: String): Single<List<Category>> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private val data: HashMap<Long, Category> = hashMapOf(
             1L to Category(OperationType.INCOMINGS, "Salary", R.drawable.ic_salary_green_24dp),
